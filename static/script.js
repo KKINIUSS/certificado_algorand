@@ -9,33 +9,43 @@ $( document ).ready(function() {
     });
 
 
-    $('.join-sertificat').on('click', function(e) {
+ $('.join-sertificat').on('click', function(e) {
 
         const isChecked = !!$('[type="radio"]:checked').length;
         $( ".wrapper-field" ).each(function( index ) {
             if (
-                    ($(this).find('.form-control').val() == '') ||
-                    ( !isChecked )
+                ($(this).find('.form-control').val() == '') ||
+                ( !isChecked )
             ) {
-                e.preventDefault();
+                console.log(12000)
                 $(this).append('<span class="error">Required field</span>');
                 $(this).find('.form-control').css('border', '1px solid red');
                 setTimeout( function() { $('.error').remove()}, 1000);
                 setTimeout( function() { $('.form-control').css('border', '1px solid transparent')}, 1000);
             }
-            else{
-                $.ajax({
-                    url: '/join',
-                    data: data,
-                    success: success,
-                    dataType: dataType
-                });
+        });
+        e.preventDefault();
+        let form = $(this).parents('form'),
+        data = $(form).serializeArray();
+        $.ajax({
+            url: "/join",
+            dataType: "json",
+            contentType : "application/json",
+            data: JSON.stringify(data),
+            type: 'POST',
+            success: function (data) {
+                if (data) {
+                    console.log(14000)
+                    console.log(data)
+                    $('.join-sertificat').addClass('join-success');
+                    console.log(15000)
+                    $('.msg-access').show('100');
+                    $('.msg-access .content-msg a').attr('href', data);
+                }
             }
-
         });
 
     });
-
 
     $('.search-sertificat').on('click', function(e) {
 
@@ -49,12 +59,63 @@ $( document ).ready(function() {
                 setTimeout( function() { $('.error').remove()}, 1000);
                 setTimeout( function() { $('.form-control').css('border', '1px solid transparent')}, 1000);
             }
-
         });
+        e.preventDefault();
+        let form = $(this).parents('form'),
+        data = $(form).serializeArray();
+        $.ajax({
+            url: "/validator",
+            dataType: "json",
+            contentType : "application/json",
+            data: JSON.stringify(data),
+            type: 'POST',
+            success: function (data) {
+                if (data) {
+                    console.log(data)
+                    document.querySelectorAll('.item').forEach(e => e.remove())
+                    data.forEach(el => {
+                        template = `          <div class="wrapper-ico-item">
+                            <i class="ico ico-item" style="background-image: url(static/img/greek.svg);"></i>
+                        </div>
+                        <div class="content-item">
+                            <div class="title-item">${el[6]}</div>
+                            <div class="date-item">Gradueted: ${el[5]} </div>
+                        </div>
+                        <div class="actions-item">
+                            <a href="#" class="btn btn-links" data-asset=${el[3]} data-name=${el[1]}><i class="ico ico-download"></i></a>
+                            <div class="menu-links">
+                                <a href="#" download="true">Download PDF</a>
+                                <a href="javascript://" data-asset=${el[3]} data-name=${el[1]} onclick="create(this)">Claim NTF</a>
+                            </div>
+                        </div>`
+                        var newDiv = document.createElement('div')
+                        newDiv.className = 'item'
+                        newDiv.innerHTML = template
 
+                        console.log(1)
+                        document.querySelector('.wrapper-result-items').appendChild(newDiv)
+                    })
+                    $('.close').on('click', function() {
+                            close_popup();
+                    });
+                    $('.btn-links').on('click', function(e) {
+                        e.preventDefault();
+                        console.log($(this).data('asset'))
+                        open_popup('.popup-access');
+                    });
+                    $('body').on('click', '#layout', function(e) {
+                        e.preventDefault();
+                        close_popup();
+                    });
+                }
+            }
+        });
     });
 
-
+    $('.btn-links').on('click', function(e) {
+        e.preventDefault();
+        open_popup('.popup-access');
+    });
     $('.verify-sertificat').on('click', function(e) {
 
         const isChecked = !!$('[type="radio"]:checked').length;
@@ -122,10 +183,7 @@ $( document ).ready(function() {
         open_popup('.popup-standarts');
     });
 
-    $('.btn-links').on('click', function(e) {
-        e.preventDefault();
-        open_popup('.popup-access');
-    });
+
 
     $('body').on('click', '#layout', function(e) {
         e.preventDefault();

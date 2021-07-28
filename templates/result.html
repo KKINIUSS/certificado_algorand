@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Result</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href={{url_for('static', filename="style.css")}}>
-    <script src={{url_for('static', filename="script.js")}}></script>
-    <script src={{url_for('static', filename="jquery.maskedinput.min.js")}}></script>
-
+    <link rel="stylesheet" href="static/style.css">
+    <script src="static/granim.min.js"
+    <script src="static/jquery.maskedinput.min.js"></script>
+    <script src="static/script.js"></script>
 
 
 </head>
@@ -24,7 +24,7 @@
         <div class="desc-page">Claim your NFT-certificate based on Certificado - blockchain-based protocol for the people of Web 3.0.
             You are able to download PDF-certificate and claim NFT for free by inserting access code provided by your school or event organiser.</div>
 
-        <form action="/validator" method="GET" class="mws-form join"  enctype=multipart/form-data>
+        <form action="" method="GET" class="mws-form join"  enctype=multipart/form-data>
             <div class="wrapper-field">
                 <div class="label-field">Student name</div>
                 <div class="border-field">
@@ -121,6 +121,33 @@
         <div class="title-mws">Certificate generation is completed!</div>
         <div class="content-msg">Certificate access codes file load will start automatically. If the download has not started, click
             <a href="/">here</a>.
+        </div>
+    </div>
+</div>
+
+
+<div class="popup popup-access">
+    <div class="wrapper-popup">
+        <div class="close"><i class="ico ico-close"></i></div>
+        <div class="title-popup">Access code</div>
+        <div class="desc-popup">To download the certificate, you need to enter the access code.</div>
+            <div class="form-popup">
+                <form action="">
+                    <div class="wrapper-field wrapper-field-search">
+                        <div class="border-field">
+                            <input type="text" name="code" class="form-control form-control-small js-musk-number">
+                        </div>
+                        <button class="verify-sertificat active">Verified <i class="ico ico-mark"></i></button>
+                        <!-- <button class="verify-sertificat proccessing">Verified <i class="ico ico-mark"></i></button> -->
+                        <!-- <button class="verify-sertificat">Verify <i class="ico ico-mark"></i></button> -->
+                    </div>
+                </form>
+            </div>
+        <div class="action-popup">
+            <a href="#" class="unlock" download="true">Download PDF <i class="ico ico-lock"></i></a>
+            <!-- <a href="#" class="unlock" >Claim NTF <i class="ico ico-lock"></i></a>
+            <a href="#" download="true">Download PDF <i class="ico ico-lock"></i></a> -->
+            <a href="#" >Claim NTF <i class="ico ico-lock"></i></a>
         </div>
     </div>
 </div>

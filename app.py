@@ -2,8 +2,7 @@ import datetime
 from os import link, name
 import random
 import hashlib
-import re
-from algosdk.future import transaction
+
 from flask import Flask, render_template ,request, send_file, send_from_directory, jsonify
 from algosdk import kmd, account, mnemonic
 from algosdk.v2client import algod
@@ -59,7 +58,6 @@ def index():
 
 @app.route("/join", methods=["POST"])
 def api():
-    print(1)
     algod_address = "https://mainnet-algorand.api.purestake.io/ps2"
     algod_token = "ygZS35fp3q95Hgl64Ga4d8ZsINOqYGB15UdsA5Cr"
     purestake_token = {'X-Api-key': algod_token}
@@ -69,14 +67,16 @@ def api():
     account_public_key = mnemonic.to_public_key(mnemonic_sender)
     con = sqlite3.connect("example.db")
     cur = con.cursor()
-    email = request.form.get("email")
-    course = request.form.get("name")
-    templates = request.form.get("theme")
-    print(templates)
-    course_unit_name = email 
-    description = request.form.get("title")
-    student = (request.form.get("student")).split('\r\n')
-    print(student)
+    print(1)
+    data = request.get_json()
+    print(data)
+    email = data[0]['value']
+    course = data[1]['value']
+    templates = data[2]['value']
+    description = data[3]['value']
+    print(email, course, templates, description)
+    student = (data[4]['value']).split('\r\n')
+    print(email, course, templates, description, student)
     cur.execute("create table if not exists accounts (email text, address text,private_key text, mnemonic text)")
     cur.execute("create table if not exists student (name text, code text)")
     cur.execute("create table if not exists certificates (path text, student text, school text, asset_id text, description text, date, course_name text, template text)")
@@ -162,10 +162,7 @@ def api():
                 writer.writerow([i, str(hash)])
             csvfile.close()
         #return send_file('/home/kiselperdit/PycharmProjects/algorand/files/%s.csv' %(str(now)), as_attachment=False)
-        send_files(str(now))
-        print(1)
-        sleep(2)
-        return render_template("join.html", name_file=str(now))
+        return  jsonify("static/files/" + str(now) + ".csv")
     else:
         private_key, address = account.generate_account()
         mnemonic_key = mnemonic.from_private_key(private_key)
@@ -246,8 +243,7 @@ def api():
             csvfile.close()
         cur.execute("insert into accounts (email, address, private_key, mnemonic) values (?, ?, ?, ?)", [ email, address, private_key, mnemonic_key])
         con.commit()
-        #return send_file('/home/kiselperdit/PycharmProjects/algorand/files/%s.csv' %(str(now)), as_attachment=False)
-        return render_template("join.html", name_file=str(now))
+        return  jsonify("static/files/" + str(now) + ".csv")
 
 def send_files(filename):
     print(filename)
@@ -273,13 +269,16 @@ def certificate(name, code, asset):
     else:
         return "Ошибка"
 
-@app.route("/validator", methods=["GET"])
+@app.route("/validator", methods=["GET", "POST"])
 def validator():
     con = sqlite3.connect("example.db")
     cur = con.cursor()
-    name = request.args.get("name")
-    code = request.args.get("code")
-    if(name or code):
+    data = request.get_json()
+    if(data):
+        print(data)
+        name = data[0]['value']
+        code = data[1]['value']
+        print(name, code)
         code = ''.join(code.split())
         cur.execute("select * from student where name=? and code=?", [name, code])
         _request = cur.fetchall()
@@ -296,7 +295,8 @@ def validator():
                 print(certificates)
                 return str(1234)
         else:
-            return render_template("result-empty.html")
+            print(_request)
+            return str(12)
     else:
         return render_template("result.html")
 
