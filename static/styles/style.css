@@ -1,0 +1,100 @@
+@import url(./reset.css);
+.certificate {
+  position: relative;
+  color: #fff;
+  background: #4325FE;
+  overflow: hidden;
+  width: 100vw;
+  height: 70.6791569087vw;
+  font-family: "IBM Plex Mono", Arial; }
+  .certificate__bgimg {
+    width: 100vw;
+    height: auto;
+    position: absolute;
+    left: 0;
+    top: 0; }
+  .certificate__content {
+    position: relative;
+    width: 78.9929742389vw;
+    left: 0.7025761124vw;
+    margin: 17.3770491803vw auto; }
+  .certificate__title {
+    color: #4325FE;
+    font-size: 9.4379391101vw;
+    font-weight: bold;
+    font-family: "Soyuz Grotesk", Arial; }
+  .certificate__input-block {
+    position: relative;
+    margin-top: 0.4215456674vw; }
+  .certificate__arrow {
+    user-select: none;
+    cursor: pointer;
+    overflow: hidden;
+    height: 100%;
+    font-size: 9.4379391101vw;
+    font-weight: bold;
+    font-family: "Soyuz Grotesk", Arial;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute; }
+    .certificate__arrow span {
+      position: relative;
+      top: 0.1405152225vw; }
+    .certificate__arrow--left {
+      right: 103.6%; }
+    .certificate__arrow--right {
+      left: 102.3%; }
+  .certificate__input {
+    height: 7.1194379391vw;
+    width: 100%;
+    font-size: 2.3419203747vw;
+    line-height: calc(110/80);
+    padding: 0vw 1.8735362998vw;
+    box-sizing: border-box;
+    font-family: "IBM Plex Mono", Arial; }
+  .certificate__txt-cols {
+    display: flex; }
+  .certificate__txt-col--lc {
+    font-size: 1.8735362998vw;
+    line-height: calc(110/80);
+    flex: 0 0 50%;
+    margin-top: 12.1779859485vw; }
+  .certificate__txt-col--rc {
+    font-size: 1.4988290398vw;
+    line-height: calc(80/64);
+    flex: 0 0 50%;
+    padding-left: 9.1334894614vw; }
+  .certificate__qr {
+    margin-top: 5.7611241218vw;
+    margin-left: 1.1241217799vw; }
+  .certificate__qr>img {
+    width: 12.2014051522vw;
+    height: 12.2014051522vw; }
+  .certificate__li {
+    position: relative;
+    display: flex; }
+    .certificate__li:before {
+      content: '';
+      position: absolute;
+      left: -1.3114754098vw;
+      top: -0.1405152225vw;
+      width: 1.8735362998vw;
+      height: 0.1639344262vw;
+      display: block;
+      background: #93FBC9; }
+    .certificate__li--mod1 {
+      margin-top: 1.7798594848vw;
+      margin-left: 8.0093676815vw; }
+    .certificate__li--mod2 {
+      margin-top: 1.2646370023vw;
+      margin-left: 1.0772833724vw; }
+      .certificate__li--mod2:before {
+        left: -1.0772833724vw;
+        top: -0.1405152225vw; }
+  .certificate__waves-ico {
+    width: 5.9484777518vw;
+    height: auto;
+    margin-left: 1.1709601874vw; }
+
+/*# sourceMappingURL=style.css.map */

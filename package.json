@@ -1,0 +1,26 @@
+{
+  "name": "dev_webpack",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@randlabs/myalgo-connect": "^1.1.0",
+    "algosdk": "^1.10.0",
+    "jquerry": "0.0.1-security"
+  },
+  "devDependencies": {
+    "webpack": "^5.45.1",
+    "webpack-cli": "^4.7.2"
+  },
+  "scripts": {
+    "dev": "webpack --mode development",
+    "build": "webpack --mode production"
+  },
+  "keywords": [
+    "javascript",
+    "js",
+    "webpack"
+  ],
+  "author": "Ivan",
+  "license": "ISC"
+}

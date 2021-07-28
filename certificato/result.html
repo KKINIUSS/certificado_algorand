@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+    <script src="jquery.maskedinput.min.js"></script>
+
+
+
+</head>
+<body>
+<header>
+    <div class="container">
+        <a href="/" class="logo"><img src="img/logo.svg" alt=""></a>
+    </div>
+</header>
+<main>
+    <div class="container container-page">
+        <h1 class="title-join">Request a certificate</h1>
+        <div class="desc-page">Claim your NFT-certificate based on Certificado - blockchain-based protocol for the people of Web 3.0.
+            You are able to download PDF-certificate and claim NFT for free by inserting access code provided by your school or event organiser.</div>
+
+        <form action="" method="post" class="mws-form join">
+
+            <div class="wrapper-field">
+                <div class="label-field">Student name</div>
+                <div class="border-field">
+                    <input type="text" name="name" class="form-control">
+                </div>
+            </div>
+
+             <div class="wrapper-field wrapper-field-search">
+                <div class="label-field">Access code</div>
+                <div class="border-field">
+                    <input type="text" name="code" class="form-control form-control-small js-musk-number">
+                </div>
+                <button class="search-sertificat">Search <i class="ico ico-search"></i></button>
+            </div>
+
+        </form>
+
+
+        <div class="title-search-result">Supported events</div>
+
+        <div class="wrapper-result-items">
+            <div class="item">
+                <div class="wrapper-ico-item"><i class="ico ico-item" style="background-image: url(img/skillbox.svg);"></i></div>
+                <div class="content-item">
+                    <div class="title-item">Skillbox – Experience</div>
+                    <div class="date-item">Gradueted: 23/10/2021 </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="wrapper-ico-item"><i class="ico ico-item" style="background-image: url(img/greek.svg);"></i></div>
+                <div class="content-item">
+                    <div class="title-item">Greekbrains – JavaScript Course</div>
+                    <div class="date-item">Gradueted: 23/10/2021 </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="wrapper-ico-item"><i class="ico ico-item" style="background-image: url(img/web3.svg);"></i></div>
+                <div class="content-item">
+                    <div class="title-item">Web3.0 Development</div>
+                    <div class="date-item">Gradueted: 23/10/2021 </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="wrapper-ico-item"><i class="ico ico-item" style="background-image: url(img/google.svg);"></i></div>
+                <div class="content-item">
+                    <div class="title-item">Google – IT Automation with P...</div>
+                    <div class="date-item">Gradueted: 23/10/2021 </div>
+                </div>
+            </div>
+
+
+            <div class="item">
+                <div class="wrapper-ico-item"><i class="ico ico-item" style="background-image: url(img/greek.svg);"></i></div>
+                <div class="content-item">
+                    <div class="title-item">Skillbox – Experience</div>
+                    <div class="date-item">Gradueted: 23/10/2021 </div>
+                </div>
+                <div class="actions-item">
+
+                </div>
+            </div>
+        </div> <!--ended wrapper-result-items-->
+
+    </div> <!-- ended container container-page-->
+</main>
+
+
+<footer>
+    <div class="container container-page">
+        <div class="social-block">
+            <div class="txt-soc">Join us on social media</div>
+            <a href="#" target="_blank" class="link"><i class="ico ico-twitter"></i></a>
+        </div>
+    
+        <div class="footer-links">
+            <ul>
+                <li><a href="#">About Certificado</a></li>
+                <li><a href="#">Issue demo certificate</a></li>
+                <li><a href="#">Request integration</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+
+
+<div class="fixed-btn hovered">
+    <span class="txt">Need to issue <br> certificate? Use a form.  </span>
+    <div class="wrapper-ico">
+        <i class="ico ico-writing"></i>
+    </div>
+</div>
+
+<div class="msg msg-access" style="display: none;">
+    <div class="wrapper-msg">
+        <div class="action-msg"><a href="#" class="close-msg"><i class="ico ico-close"></i></a></div>
+        <div class="title-mws">Certificate generation is completed!</div>
+        <div class="content-msg">Certificate access codes file load will start automatically. If the download has not started, click
+            <a href="/">here</a>.
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

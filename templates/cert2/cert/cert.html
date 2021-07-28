@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+
+
+    <style>
+        @page {
+            size: 9in 16in;
+            margin: 0mm;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        * {
+            font-family: "Roboto", sans-serif;
+        }
+        .wrapper-cert {
+            width: 2000px;
+            height: 1414px;
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: relative;
+        }
+        .text-1 {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            color: #fff;
+            top: 47%;
+            font-size: 120px;
+        }
+        .qr {
+            background-size: cover;
+            position: absolute;
+            background-repeat: no-repeat;
+            width: 300px;
+            height: 300px;
+            bottom: 60px;
+            right: 290px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper-cert" style="background-image: url(15.png);">
+        <div class="text-1">
+            Иван Киселев
+        </div>
+        <div class="qr" style="background-image: url(qr.jpg); "></div> 
+    </div>   
+</body>
+</html>

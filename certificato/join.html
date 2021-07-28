@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Join</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<link rel="stylesheet" href="style.css">
+	<script src="jquery.maskedinput.min.js"></script>
+	<script src="granim.min.js"></script>
+	<script src="script.js"></script>
+</head>
+<body>
+	<canvas id="canvas-basic"></canvas>
+	<header>
+		<div class="container">
+			<a href="/" class="logo"><img src="img/logo.svg" alt=""></a>
+		</div>
+	</header>
+	<main>
+		<div class="container container-page">
+			<h1 class="title-join">NFT credentials for the people of Web 3.0</h1>
+			<div class="desc-page">Join Certificado, a blockchain-based protocol for issuing digital certificates.
+				Create unique NFT credentials on Algorand to reward your students or event attendees for free.</div>
+
+			<form action="" method="post" class="mws-form join">
+
+				<div class="wrapper-field">
+					<div class="label-field">E-mail</div>
+					<div class="border-field">
+						<input type="text" name="email" class="form-control">
+					</div>
+				</div>
+
+				<div class="wrapper-field">
+					<div class="label-field">Course name</div>
+					<div class="border-field">
+						<input type="text" name="name" class="form-control">
+					</div>
+				</div>
+
+				<div class="wrapper-field">
+					<div class="label-field">Template background <span><a href="/">Standarts</a></span></div>
+					<div class="theme-changer">
+						<input type="radio" name="theme" id="style-1" class="theme-checkbox">
+						<label for="style-1"><img src="img/style-1.svg" alt=""></label>
+						<input type="radio" name="theme" id="style-2" class="theme-checkbox">
+						<label for="style-2"><img src="img/style-2.svg" alt=""></label>
+						<input type="radio" name="theme" id="style-3" class="theme-checkbox">
+						<label for="style-3"><img src="img/style-3.svg" alt=""></label>
+
+						<input type="radio" name="theme" id="style-4" class="theme-checkbox">
+						<label for="style-4" class="custom-theme" style="display: none;">
+							<div class="wrapper-img"><img src="" id="output" alt=""></div>
+						</label>
+
+						<input type="file" accept="image/*" id="js-file" onchange="loadFile(event)">
+						<button class="add-custom-theme" id="js-activate-file"><i class="ico ico-plus"></i><span>upload custom template</span></button>
+					</div>
+				</div>
+
+				<div class="wrapper-field">
+					<div class="label-field">Text to put on the certificate</div>
+					<div class="border-field">
+						<input type="text" class="form-control" name="title" value="took the first prize at Web 3.0 hackathon">
+					</div>
+				</div>
+
+				<div class="wrapper-field">
+					<div class="label-field">Students list (each student must be entered in the "Name Surname" format on a new line)</div>
+					<div class="border-field">
+						<textarea name="listing" id="info" cols="30" rows="10" class="form-control"></textarea>
+					</div>
+				</div>
+
+                <button class="join-sertificat">Issue on Algorand <i class="ico ico-mark"></i></button>
+                <button class="join-sertificat join-success">Issue on Algorand <i class="ico ico-mark"></i></button>
+			</form>
+		</div>
+	</main>
+    <footer>
+
+
+        <div class="fixed-btn hovered">
+            <span class="txt">Are you a student? <br>Take your certificate.</span>
+            <div class="wrapper-ico">
+                <i class="ico ico-student"></i>
+            </div>
+        </div>
+
+        <div class="msg msg-access">
+            <div class="wrapper-msg">
+                <div class="action-msg"><a href="#" class="close-msg"><i class="ico ico-close"></i></a></div>
+                <div class="title-mws">Certificate generation is completed!</div>
+                <div class="content-msg">Certificate access codes file load will start automatically. If the download has not started, click
+                    <a href="" download="true">here</a>.
+                </div>
+            </div>
+        </div>
+
+
+    </footer>
+</body>
+</html>

@@ -1,0 +1,129 @@
+@import "./reset.css";
+
+
+// 4270 - maket width
+$maketWidth: 4270;
+$blue: #4325FE;
+@function calcSize($pixels, $scale: 0.5) {
+  @return #{$pixels*100/$maketWidth}vw;
+}
+.certificate{
+	position: relative;
+	color: #fff;
+	background: $blue;
+	overflow: hidden;
+	width: calcSize(4270);
+	height: calcSize(3018);
+	font-family: "IBM Plex Mono", Arial;
+	&__bgimg{
+		width: calcSize(4270);
+		height: auto;
+		position: absolute;
+		left: 0;
+		top: 0;
+	}
+	&__content{
+		position: relative;
+		width: calcSize(3373);
+		left: calcSize(30);
+		margin: calcSize(371*2) auto;
+	}
+	&__title{
+		color: $blue;
+		font-size: calcSize(403);
+		font-weight: bold;	
+		font-family: "Soyuz Grotesk", Arial;
+	}
+	&__input-block{
+		position: relative;
+		margin-top: calcSize(18);
+	}
+	&__arrow{
+		user-select: none;
+		cursor: pointer;
+		overflow: hidden;
+		height: 100%;
+		font-size: calcSize(403);
+		font-weight: bold;
+		font-family: "Soyuz Grotesk", Arial;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: absolute;
+		span{
+			position: relative;
+			top: calcSize(6);
+		}
+		&--left{
+		    right: 103.6%;
+		}
+		&--right{
+			left: 102.3%;
+		}
+	}
+	&__input{
+		height: calcSize(304);
+		width: 100%;
+		font-size: calcSize(100);
+		line-height: calc(110/80);
+		padding: calcSize(0) calcSize(80);
+		box-sizing: border-box;
+		font-family: "IBM Plex Mono", Arial;
+	}
+	&__txt-cols{
+		display: flex;
+	}
+	&__txt-col{
+		&--lc{
+			font-size: calcSize(80);
+			line-height: calc(110/80);
+			flex: 0 0 50%;
+			margin-top: calcSize(260*2);
+		}
+		&--rc{
+			font-size: calcSize(64);
+			line-height: calc(80/64);
+			flex: 0 0 50%;
+		    padding-left: calcSize(195*2);
+		}
+	}
+	&__qr{
+	    margin-top: calcSize(123*2);
+	    margin-left: calcSize(24*2);
+	}
+	&__qr-img{
+		width: calcSize(521);
+		height: calcSize(521);
+	}
+	&__li{
+		position: relative;
+		display: flex;
+		&:before{
+			content: '';
+			position: absolute;
+			left: calcSize(-56);
+			top: calcSize(-6);
+			width: calcSize(80);
+			height: calcSize(7);
+			display: block;
+			background: #93FBC9;
+		}
+		&--mod1{
+			margin-top: calcSize(38*2);
+			margin-left: calcSize(171*2);
+		}
+		&--mod2{
+			margin-top: calcSize(27*2);
+			margin-left: calcSize(23*2);
+			&:before{
+				left: calcSize(-46);
+				top: calcSize(-6);
+			}
+		}
+	}
+	&__waves-ico{
+		width: calcSize(254);
+		height: auto;
+		margin-left: calcSize(50);
+	}
+}

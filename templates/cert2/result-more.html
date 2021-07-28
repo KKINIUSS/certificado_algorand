@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="jquery.maskedinput.min.js"></script>
+    <script src="granim.min.js"></script>
+    <script src="script.js"></script>
+</head>
+<body>
+    <div class="wrapper-page">
+        <canvas id="canvas-basic"></canvas>
+        <header>
+            <div class="container">
+                <a href="/" class="logo"><img src="img/logo.svg" alt=""></a>
+            </div>
+        </header>
+        <main>
+            <div class="container container-page">
+                <h1 class="title-join">Request a certificate</h1>
+                <div class="desc-page">Claim your NFT-certificate based on Certificado - blockchain-based protocol for the people of Web 3.0.
+                    You are able to download PDF-certificate and claim NFT for free by inserting access code provided by your school or event organiser.</div>
+
+                <form action="" method="post" class="mws-form join">
+
+                    <div class="wrapper-field">
+                        <div class="label-field">Student name</div>
+                        <div class="border-field">
+                            <input type="text" name="name" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="wrapper-field wrapper-field-search">
+                        <div class="label-field">Access code</div>
+                        <div class="border-field">
+                            <input type="text" name="code" class="form-control form-control-small js-musk-number">
+                        </div>
+                        <button class="search-sertificat">Search <i class="ico ico-search"></i></button>
+                    </div>
+
+                </form>
+
+
+                <div class="title-search-result">Supported events</div>
+
+                <div class="wrapper-result-items">
+                    <div class="item">
+                        <div class="wrapper-ico-item"><i class="ico ico-item" style="background-image: url(img/greek.svg);"></i></div>
+                        <div class="content-item">
+                            <div class="title-item">Skillbox – Experience</div>
+                            <div class="date-item">Gradueted: 23/10/2021 </div>
+                        </div>
+                        <div class="actions-item">
+                            <a href="/test/" class="btn btn-links"><i class="ico ico-download"></i></a>
+                            <div class="menu-links">
+                                <a href="#" download="true">Download PDF</a>
+                                <a href="javascript://" data-asses='testing 0' onclick="create(this)">Claim NTF</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="wrapper-ico-item"><i class="ico ico-item" style="background-image: url(img/greek.svg);"></i></div>
+                        <div class="content-item">
+                            <div class="title-item">Skillbox – Experience</div>
+                        </div>
+                        <div class="actions-item">
+                            <a href="#" class="btn btn-links"><i class="ico ico-download"></i></a>
+                            <div class="menu-links">
+                                <a href="#" download="true">Download PDF</a>
+                                <a href="javascript://" data-asses='testing 1' onclick="create(this)">Claim NTF</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="wrapper-ico-item"><i class="ico ico-item" style="background-image: url(img/greek.svg);"></i></div>
+                        <div class="content-item">
+                            <div class="title-item">Skillbox – Experience</div>
+                            <div class="date-item">Gradueted: 23/10/2021 </div>
+                        </div>
+                        <div class="actions-item">
+                            <a href="#" class="btn btn-links"><i class="ico ico-download"></i></a>
+                            <div class="menu-links">
+                                <a href="#" download="true">Download PDF</a>
+                                <a href="javascript://" data-asses='testing 2' onclick="create(this)">Claim NTF</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="wrapper-ico-item"><i class="ico ico-item" style="background-image: url(img/greek.svg);"></i></div>
+                        <div class="content-item">
+                            <div class="title-item">Skillbox – Experience</div>
+                            <div class="date-item">Gradueted: 23/10/2021 </div>
+                        </div>
+                        <div class="actions-item">
+                            <a href="#" class="btn btn-links"><i class="ico ico-download"></i></a>
+                            <div class="menu-links">
+                                <a href="#" download="true">Download PDF</a>
+                                <a href="javascript://" data-asses='testing 3' onclick="create(this)">Claim NTF</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="wrapper-ico-item"><i class="ico ico-item" style="background-image: url(img/greek.svg);"></i></div>
+                        <div class="content-item">
+                            <div class="title-item">Skillbox – Experience</div>
+                            <div class="date-item">Gradueted: 23/10/2021 </div>
+                        </div>
+                        <div class="actions-item">
+                            <a href="#" class="btn btn-links"><i class="ico ico-download"></i></a>
+                            <div class="menu-links">
+                                <a href="#" download="true">Download PDF</a>
+                                <a href="javascript://" data-asses='testing 4' onclick="create(this)">Claim NTF</a>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!--ended wrapper-result-items-->
+
+            </div> <!-- ended container container-page-->
+        </main>
+
+
+        <footer>
+            <div class="container container-page">
+                <div class="social-block">
+                    <div class="txt-soc">Join us on social media</div>
+                    <a href="#" target="_blank" class="link"><i class="ico ico-twitter"></i></a>
+                </div>
+            
+                <div class="footer-links">
+                    <ul>
+                        <li><a href="#">About Certificado</a></li>
+                        <li><a href="#">Issue demo certificate</a></li>
+                        <li><a href="#">Request integration</a></li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+
+        
+    </div>
+
+<div class="fixed-btn hovered">
+    <span class="txt">Need to issue <br> certificate? Use a form.</span>
+    <div class="wrapper-ico">
+        <i class="ico ico-writing"></i>
+    </div>
+</div>
+
+<div class="msg msg-access" style="display: block;">
+    <div class="wrapper-msg">
+        <div class="action-msg"><a href="#" class="close-msg"><i class="ico ico-close"></i></a></div>
+        <div class="title-mws">Congratulations! 🎉</div>
+        <div class="content-msg">Your certificate is being downloaded.</div>
+    </div>
+</div>
+
+
+<div class="popup popup-standarts">
+    <div class="wrapper-popup">
+        <div class="close"><i class="ico ico-close"></i></div>
+        <div class="title-popup">Standarts</div>
+        <div class="desc-popup">For the correct display of the certificate, follow the template.</div>
+        <div class="template-cert" style="background-image: url(img/15.png);">
+            <div class="full-name"><div class="clue">The name of the student must be placed here</div> William Gates </div>
+            <div class="pr-code"><div class="clue">The QR-code must be placed here</div></div>
+        </div>
+        <div class="action-popup">
+            <div class="btn-download">Download template <a href="/" class="btn btn-links"><i class="ico ico-download"></i></a></div>
+        </div>
+    </div>
+</div>
+
+
+<div class="popup popup-access">
+    <div class="wrapper-popup">
+        <div class="close"><i class="ico ico-close"></i></div>
+        <div class="title-popup">Access code</div>
+        <div class="desc-popup">To download the certificate, you need to enter the access code.</div>
+            <div class="form-popup">
+                <form action="">
+                    <div class="wrapper-field wrapper-field-search">
+                        <div class="border-field">
+                            <input type="text" name="code" class="form-control form-control-small js-musk-number">
+                        </div>
+                        <button class="verify-sertificat active">Verified <i class="ico ico-mark"></i></button>
+                        <!-- <button class="verify-sertificat proccessing">Verified <i class="ico ico-mark"></i></button> -->
+                        <!-- <button class="verify-sertificat">Verify <i class="ico ico-mark"></i></button> -->
+                    </div>
+                </form>
+            </div>
+        <div class="action-popup">
+            <a href="#" class="unlock" download="true">Download PDF <i class="ico ico-lock"></i></a>
+            <!-- <a href="#" class="unlock" >Claim NTF <i class="ico ico-lock"></i></a>
+            <a href="#" download="true">Download PDF <i class="ico ico-lock"></i></a> -->
+            <a href="#" >Claim NTF <i class="ico ico-lock"></i></a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

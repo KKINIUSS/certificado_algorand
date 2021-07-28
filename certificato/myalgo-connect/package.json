@@ -1,0 +1,66 @@
+{
+  "_from": "@randlabs/myalgo-connect@^1.1.0",
+  "_id": "@randlabs/myalgo-connect@1.1.0",
+  "_inBundle": false,
+  "_integrity": "sha512-qdRxMNvxw9SOvu7p+qwGGILkIVj5nnbjkDCFKS3ISU46Cgwy2ZtLq/Bs2p3tMpQ7fgoUPj2NgfpyQaYGIztXFw==",
+  "_location": "/@randlabs/myalgo-connect",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "@randlabs/myalgo-connect@^1.1.0",
+    "name": "@randlabs/myalgo-connect",
+    "escapedName": "@randlabs%2fmyalgo-connect",
+    "scope": "@randlabs",
+    "rawSpec": "^1.1.0",
+    "saveSpec": null,
+    "fetchSpec": "^1.1.0"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/@randlabs/myalgo-connect/-/myalgo-connect-1.1.0.tgz",
+  "_shasum": "fba9b1931cd81e90764abe993c3564a08e6d6edc",
+  "_spec": "@randlabs/myalgo-connect@^1.1.0",
+  "_where": "E:\\projects\\test",
+  "author": {
+    "name": "RandLabs.IO"
+  },
+  "bugs": {
+    "url": "https://github.com/randlabs/myalgo-connect/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "@randlabs/communication-bridge": "^1.0.0",
+    "belter": "^1.0.170"
+  },
+  "deprecated": false,
+  "description": "![myalgo-logo](my-algo.png)",
+  "devDependencies": {
+    "@types/node": "^14.17.3",
+    "@typescript-eslint/eslint-plugin": "^4.27.0",
+    "@typescript-eslint/parser": "^4.27.0",
+    "buffer": "^6.0.3",
+    "eslint": "^7.28.0",
+    "process": "^0.11.10",
+    "typescript": "^4.3.2",
+    "webpack": "^5.40.0",
+    "webpack-cli": "^4.7.2"
+  },
+  "homepage": "https://github.com/randlabs/myalgo-connect#readme",
+  "keywords": [],
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "name": "@randlabs/myalgo-connect",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/randlabs/myalgo-connect.git"
+  },
+  "scripts": {
+    "build": "npm run webpack",
+    "webpack": "webpack --mode production"
+  },
+  "types": "index.d.ts",
+  "version": "1.1.0"
+}

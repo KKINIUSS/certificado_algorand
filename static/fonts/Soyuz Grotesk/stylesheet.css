@@ -1,0 +1,7 @@
+@font-face {
+    font-family: 'Soyuz Grotesk';
+    src: url('soyuz_grotesk_bold-webfont.woff2') format('woff2'),
+         url('soyuz_grotesk_bold-webfont.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+}
