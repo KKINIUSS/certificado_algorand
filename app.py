@@ -79,7 +79,7 @@ def api():
     print(email, course, templates, description, student)
     cur.execute("create table if not exists accounts (email text, address text,private_key text, mnemonic text)")
     cur.execute("create table if not exists student (name text, code text)")
-    cur.execute("create table if not exists certificates (path text, student text, school text, asset_id text, description text, date, course_name text, template text)")
+    cur.execute("create table if not exists certificates (path text, student text, school text, asset_id text, description text, date, course_name text, template text, access_code)")
     con.commit()
     cur.execute("select address, mnemonic from accounts where email=?", [email])
     query = cur.fetchall()
@@ -142,24 +142,25 @@ def api():
         #    print(e)
         with open('/home/kiselperdit/PycharmProjects/algorand/static/files/%s.csv' % (str(now)), 'w', newline='') as csvfile:
             writer = csv.writer(csvfile, delimiter=';')
-            writer.writerow(["Студент", "Код доступа"])
+            writer.writerow(["Студент", "Код доступа к поиску", "Код доступа к сертификату"])
             for i in student:
                 cur.execute("select code from student where name=?", [i])
                 code = cur.fetchall()
                 time = datetime.datetime.now()
                 time = time.strftime("%d/%m/%Y")
-                cur.execute("insert into certificates (path, student, school, asset_id, description, date, course_name, template) values(?, ?, ?, ?, ?, ?, ?, ?)", ['', i, email, 'global_asset_id', description, time, course, templates])
-                con.commit()
                 if(code):
                     hash = code[0][0]
                 else:
                     hash = random.randint(100000, 999999)
                     cur.execute("insert into student (name, code) values (?, ?)", [i, hash])
                     con.commit()
+                hash_1 = random.randint(1000000, 9999999)
+                cur.execute("insert into certificates (path, student, school, asset_id, description, date, course_name, template, access_code) values(?, ?, ?, ?, ?, ?, ?, ?, ?)", ['', i, email, '123', description, time, course, templates, str(hash_1)])
+                con.commit()
                 username_mas = i.split()
                 username = '_'.join(username_mas)
-                pdfkit.from_url("http://127.0.0.1:5000/get_certificate/%s/%s/%s" %(username, hash, 'global_asset_id'), "certificates/{}.pdf".format(username + "_" + 'global_asset_id'))
-                writer.writerow([i, str(hash)])
+                pdfkit.from_url("http://127.0.0.1:5000/get_certificate/%s/%s/%s" %(username, hash, '123'), "certificates/{}.pdf".format(username + "_" + '123'))
+                writer.writerow([i, str(hash), str(hash_1)])
             csvfile.close()
         #return send_file('/home/kiselperdit/PycharmProjects/algorand/files/%s.csv' %(str(now)), as_attachment=False)
         return  jsonify("static/files/" + str(now) + ".csv")
@@ -222,24 +223,25 @@ def api():
         #    print(e)
         with open('/home/kiselperdit/PycharmProjects/algorand/static/files/%s.csv' % (str(now)), 'w', newline='') as csvfile:
             writer = csv.writer(csvfile, delimiter=';')
-            writer.writerow(["Студент", "Код доступа"])
+            writer.writerow(["Студент", "Код доступа к поиску", "Код доступа к сертификату"])
             for i in student:
                 cur.execute("select code from student where name=?", [i])
                 code = cur.fetchall()
                 time = datetime.datetime.now()
                 time = time.strftime("%d/%m/%Y")
-                cur.execute("insert into certificates (path, student, school, asset_id, description, date, course_name, template) values(?, ?, ?, ?, ?, ?, ?, ?)", ['', i, email, 'global_asset_id', description, time, course, templates])
-                con.commit()
                 if (code):
                     hash = code[0][0]
                 else:
                     hash = random.randint(100000, 999999)
                     cur.execute("insert into student (name, code) values (?, ?)", [i, hash])
                     con.commit()
+                hash_1 = random.randint(100000, 999999)
+                cur.execute("insert into certificates (path, student, school, asset_id, description, date, course_name, template, access_code) values(?, ?, ?, ?, ?, ?, ?, ?, ?)", ['', i, email, '123', description, time, course, templates, str(hash_1)])
+                con.commit()
                 username_mas = i.split()
                 username = '_'.join(username_mas)
-                pdfkit.from_url("http://127.0.0.1:5000/get_certificate/%s/%s/%s" %(username, hash, 'global_asset_id'), "certificates/{}.pdf".format(username + "_" + 'global_asset_id'))
-                writer.writerow([i, str(hash)])
+                pdfkit.from_url("http://127.0.0.1:5000/get_certificate/%s/%s/%s" %(username, hash, '123'), "certificates/{}.pdf".format(username + "_" + '123'))
+                writer.writerow([i, str(hash), str(hash_1)])
             csvfile.close()
         cur.execute("insert into accounts (email, address, private_key, mnemonic) values (?, ?, ?, ?)", [ email, address, private_key, mnemonic_key])
         con.commit()
@@ -345,5 +347,22 @@ def transaction():
 #    wait_for_confirmation(algod_client, txid)
 #    # The balance should now be 10.
 #print_asset_holding(algod_client, accounts[3]['pk'], asset_id)
+
+@app.route("/access", methods=["POST"])
+def access():
+    con = sqlite3.connect("example.db")
+    cur = con.cursor()
+    data = request.get_json()
+    print(data)
+    if(data[0]['value'] and data[1]['aseet-id']):
+        cur.execute("select * from certificates")
+        print(cur.fetchall())
+        cur.execute("select student from certificates where access_code=? and asset_id=?", [data[0]['value'], data[1]['aseet-id']])
+        q = cur.fetchall()
+        if(q):
+            print(q[0][0])
+            return jsonify('/download_certificate/' + str(data[1]['aseet-id'] + '/' + q[0][0]), q[0][0])
+        else:
+            return "Error"
 if __name__ == "__main__":
     app.run(debug=True)

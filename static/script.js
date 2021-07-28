@@ -96,11 +96,20 @@ $( document ).ready(function() {
                         document.querySelector('.wrapper-result-items').appendChild(newDiv)
                     })
                     $('.close').on('click', function() {
+                            let div = document.querySelector(".verify-sertificat")
+                            div.classList.remove('active')
+                            document.getElementById('claim_nft').className = 'lock'
+                            document.getElementById('download_pdf').className = 'lock'
+                            document.getElementById('download_pdf').href = '#'
+                            document.getElementById('download_pdf').setAttribute('onclick',"return false")
+                            document.getElementById('claim_nft').setAttribute('onclick',"return false")
+                            $('#claim_nft').attr({'data-asset':'', 'data-address':''})
                             close_popup();
                     });
                     $('.btn-links').on('click', function(e) {
                         e.preventDefault();
                         console.log($(this).data('asset'))
+                        $('.verify-sertificat').attr('data-asset', $(this).data('asset'))
                         open_popup('.popup-access');
                     });
                     $('body').on('click', '#layout', function(e) {
@@ -112,10 +121,6 @@ $( document ).ready(function() {
         });
     });
 
-    $('.btn-links').on('click', function(e) {
-        e.preventDefault();
-        open_popup('.popup-access');
-    });
     $('.verify-sertificat').on('click', function(e) {
 
         const isChecked = !!$('[type="radio"]:checked').length;
@@ -131,8 +136,40 @@ $( document ).ready(function() {
             }
 
         });
+        e.preventDefault();
+        let form = $(this).parents('form'),
+        data = $(form).serializeArray();
+        console.log(data)
+        data.push({'aseet-id' : $(this).attr('data-asset')});
+        console.log(data)
+        $.ajax({
+            url: "/access",
+            dataType: "json",
+            contentType : "application/json",
+            data: JSON.stringify(data),
+            type: 'POST',
+            success: function (data) {
+                if (data) {
+                    console.log("success")
+                    console.log(data)
+                    let div = document.querySelector(".verify-sertificat")
+                    div.classList.add('active')
+                    document.getElementById('claim_nft').className = 'unlock'
+                    document.getElementById('claim_nft').removeAttribute("onclick")
+                    document.getElementById('claim_nft').setAttribute("onclick", 'create(this)')
+                    $('#claim_nft').attr({'data-asset' : $('.verify-sertificat').attr('data-asset'), 'data-address' : data[0], 'data-name' : data[1]})
+                    document.getElementById('download_pdf').className = 'unlock'
+                    document.getElementById('download_pdf').href = data[0]
+                    document.getElementById('download_pdf').removeAttribute("onclick")
+
+
+                    console.log(1)
+                }
+            }
+        });
 
     });
+
 
 
 
@@ -182,7 +219,10 @@ $( document ).ready(function() {
         e.preventDefault();
         open_popup('.popup-standarts');
     });
-
+    $('.btn-links').on('click', function(e) {
+        e.preventDefault();
+        open_popup('.popup-access');
+    });
 
 
     $('body').on('click', '#layout', function(e) {
