@@ -796,7 +796,17 @@ button.verify-sertificat.proccessing {
 .wrapper-page, #layout {
     transition: .5s;
 }
-
+canvas#canvas-grand {
+      position: fixed;
+      display: block;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: -5;
+    }
 @media (max-width: 500px) {
     .fixed-btn {
         top: 12px;

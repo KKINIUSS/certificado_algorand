@@ -1,8 +1,7 @@
 import datetime
-from os import link, name
+import os.path
 import random
 import hashlib
-
 from flask import Flask, render_template ,request, send_file, send_from_directory, jsonify
 from algosdk import kmd, account, mnemonic
 from algosdk.v2client import algod
@@ -11,14 +10,12 @@ import sqlite3
 import csv
 import json
 from flask.helpers import url_for
-import pdfkit
-from algosdk.wallet import Wallet
 from werkzeug.utils import redirect
-from time import sleep
-from werkzeug.wrappers import response
 import pdfkit
+from werkzeug.utils import secure_filename
 app = Flask(__name__)
-
+UPLOAD_FOLDER = 'C:\\Users\\Fiji\\PycharmProjects\\pythonProject\\certificado_algorand\\static\\img'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def wait_for_confirmation(client, txid):
     last_round = client.status().get('last-round')
     txinfo = client.pending_transaction_info(txid)
@@ -83,6 +80,7 @@ def api():
     con.commit()
     cur.execute("select address, mnemonic from accounts where email=?", [email])
     query = cur.fetchall()
+    config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
     if(query):  
         address = query[0][0]
         mnemonic_key = query[0][1]
@@ -140,7 +138,7 @@ def api():
         #    print_asset_holding(algod_client, user_info['address'], asset_id)
         #except Exception as e:
         #    print(e)
-        with open('/home/kiselperdit/PycharmProjects/algorand/static/files/%s.csv' % (str(now)), 'w', newline='') as csvfile:
+        with open('C:\\Users\\Fiji\\PycharmProjects\\pythonProject\\certificado_algorand\\static\\files\\%s.csv' % (str(now)), 'w', newline='') as csvfile:
             writer = csv.writer(csvfile, delimiter=';')
             writer.writerow(["Студент", "Код доступа к поиску", "Код доступа к сертификату"])
             for i in student:
@@ -155,11 +153,12 @@ def api():
                     cur.execute("insert into student (name, code) values (?, ?)", [i, hash])
                     con.commit()
                 hash_1 = random.randint(1000000, 9999999)
-                cur.execute("insert into certificates (path, student, school, asset_id, description, date, course_name, template, access_code) values(?, ?, ?, ?, ?, ?, ?, ?, ?)", ['', i, email, '123', description, time, course, templates, str(hash_1)])
+                asset_id = random.randint(1000000, 9999999)
+                cur.execute("insert into certificates (path, student, school, asset_id, description, date, course_name, template, access_code) values(?, ?, ?, ?, ?, ?, ?, ?, ?)", ['', i, email, str(asset_id), description, time, course, templates, str(hash_1)])
                 con.commit()
                 username_mas = i.split()
                 username = '_'.join(username_mas)
-                pdfkit.from_url("http://127.0.0.1:5000/get_certificate/%s/%s/%s" %(username, hash, '123'), "certificates/{}.pdf".format(username + "_" + '123'))
+                pdfkit.from_url("http://127.0.0.1:5000/get_certificate/%s/%s/%s" %(username, hash, str(asset_id)), "certificates/{}.pdf".format(username + "_" + str(asset_id)), configuration=config)
                 writer.writerow([i, str(hash), str(hash_1)])
             csvfile.close()
         #return send_file('/home/kiselperdit/PycharmProjects/algorand/files/%s.csv' %(str(now)), as_attachment=False)
@@ -221,7 +220,7 @@ def api():
         #    print_asset_holding(algod_client, user_info['address'], asset_id)
         #except Exception as e:
         #    print(e)
-        with open('/home/kiselperdit/PycharmProjects/algorand/static/files/%s.csv' % (str(now)), 'w', newline='') as csvfile:
+        with open('C:\\Users\\Fiji\\PycharmProjects\\pythonProject\\certificado_algorand\\static\\files\\%s.csv' % (str(now)), 'w', newline='') as csvfile:
             writer = csv.writer(csvfile, delimiter=';')
             writer.writerow(["Студент", "Код доступа к поиску", "Код доступа к сертификату"])
             for i in student:
@@ -236,21 +235,22 @@ def api():
                     cur.execute("insert into student (name, code) values (?, ?)", [i, hash])
                     con.commit()
                 hash_1 = random.randint(100000, 999999)
-                cur.execute("insert into certificates (path, student, school, asset_id, description, date, course_name, template, access_code) values(?, ?, ?, ?, ?, ?, ?, ?, ?)", ['', i, email, '123', description, time, course, templates, str(hash_1)])
+                asset_id = random.randint(1000000, 9999999)
+                cur.execute("insert into certificates (path, student, school, asset_id, description, date, course_name, template, access_code) values(?, ?, ?, ?, ?, ?, ?, ?, ?)", ['', i, email, str(asset_id), description, time, course, templates, str(hash_1)])
                 con.commit()
                 username_mas = i.split()
                 username = '_'.join(username_mas)
-                pdfkit.from_url("http://127.0.0.1:5000/get_certificate/%s/%s/%s" %(username, hash, '123'), "certificates/{}.pdf".format(username + "_" + '123'))
+                pdfkit.from_url("http://127.0.0.1:5000/get_certificate/%s/%s/%s" %(username, hash, str(asset_id)), "certificates/{}.pdf".format(username + "_" + str(asset_id)), configuration=config)
                 writer.writerow([i, str(hash), str(hash_1)])
             csvfile.close()
         cur.execute("insert into accounts (email, address, private_key, mnemonic) values (?, ?, ?, ?)", [ email, address, private_key, mnemonic_key])
         con.commit()
         return  jsonify("static/files/" + str(now) + ".csv")
 
-def send_files(filename):
-    print(filename)
-    return redirect(url_for('static',filename='join.html'))
-    return send_from_directory('/home/kiselperdit/PycharmProjects/algorand/static/files', filename + ".csv", as_attachment=False)
+#def send_files(filename):
+#    print(filename)
+#    return redirect(url_for('static',filename='join.html'))
+#    return send_from_directory('/home/kiselperdit/PycharmProjects/algorand/static/files', filename + ".csv", as_attachment=False)
 
 @app.route("/get_certificate/<name>/<code>/<asset>", methods=["GET", "POST"])
 def certificate(name, code, asset):
@@ -260,17 +260,33 @@ def certificate(name, code, asset):
     name = ' '.join(name.split("_"))
     con = sqlite3.connect("example.db")
     cur = con.cursor()
-    cur.execute("select template from certificates where asset_id=? and student=?", [asset, name])
+    cur.execute("select template, school from certificates where asset_id=? and student=?", [asset, name])
     temp = cur.fetchall()
     cur.execute("select * from student where name=? and code=?", [str(name), str(code)])
     req_ = cur.fetchall()
     print(req_ )
     print(temp)
     if(req_[0][0] and temp[0][0]):
-        return render_template("index.html", name=name, back= "/static/" + temp[0][0] + ".png", link="https://google.com")
+        if(temp[0][0] != 'on'):
+            return render_template("index.html", name=name, back= "/static/" + temp[0][0] + ".png", link="http://localhost:5000/")
+        else:
+            filename = temp[0][1]
+            filename = ''.join(filename.split('@'))
+            return render_template("index.html", name=name, back="/static/img/" + filename + '_template.png', link="https://google.com")
     else:
         return "Ошибка"
 
+@app.route("/upload_template", methods=["GET", "POST"])
+def upload():
+    file = request.files['myFile']
+    file_name = request.form.get('email')
+    file_name = ''.join(file_name.split('@'))
+    print(file_name)
+    filename = secure_filename(file_name + '_template.png')
+    print(filename)
+    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    print(1)
+    return "1"
 @app.route("/validator", methods=["GET", "POST"])
 def validator():
     con = sqlite3.connect("example.db")
@@ -306,12 +322,13 @@ def validator():
 def download_certificate(asset_id, name):
     print(name, asset_id)
     name = '_'.join(name.split())
-    return send_from_directory("/home/kiselperdit/PycharmProjects/algorand/certificates", name + "_" + asset_id + ".pdf", as_attachment=False)
+    print(name)
+    return send_from_directory("C:\\Users\\Fiji\\PycharmProjects\\pythonProject\\certificado_algorand\\certificates", name + "_" + asset_id + ".pdf", as_attachment=False)
 
 @app.route('/download/<filename>', methods=["GET", "POST"])
 def download(filename):
     print(filename)
-    return send_from_directory("/home/kiselperdit/PycharmProjects/algorand/static/files", filename, as_attachment=False)
+    return send_from_directory("C:\\Users\\Fiji\\PycharmProjects\\pythonProject\\certificado_algorand\\static\\files", filename, as_attachment=False)
 
 @app.route("/claim_nft", methods=["POST"])
 def transaction():
@@ -354,6 +371,7 @@ def access():
     cur = con.cursor()
     data = request.get_json()
     print(data)
+    data[0]['value'] = ''.join(data[0]['value'].split())
     if(data[0]['value'] and data[1]['aseet-id']):
         cur.execute("select * from certificates")
         print(cur.fetchall())

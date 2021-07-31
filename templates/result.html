@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="static/style.css">
     <script src="static/granim.min.js"></script>
     <script src="static/jquery.maskedinput.min.js"></script>
+    <script src="static/lottie.js"></script>
     <script src="static/script.js"></script>
     <script src="static/bundle.js"></script>
 
@@ -15,6 +16,7 @@
 <body>
 <div class="wrapper-page">
 			<canvas id="canvas-basic"></canvas>
+            <canvas id="canvas-grand" style="z-index: -5;"></canvas>
 			<header>
 				<div class="container">
 					<a href="/" class="logo"><img src="static/img/logo.svg" alt=""></a>
@@ -118,13 +120,12 @@
     </div>
 </div>
 </a>
-<div class="msg msg-access" style="display: none;">
+
+<div class="msg msg-access" style="display: none; z-index: 3000;">
     <div class="wrapper-msg">
         <div class="action-msg"><a href="#" class="close-msg"><i class="ico ico-close"></i></a></div>
-        <div class="title-mws">Certificate generation is completed!</div>
-        <div class="content-msg">Certificate access codes file load will start automatically. If the download has not started, click
-            <a href="/">here</a>.
-        </div>
+        <div class="title-mws">Congratulations! 🎉</div>
+        <div class="content-msg">Your certificate is being downloaded.</div>
     </div>
 </div>
 

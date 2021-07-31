@@ -10,7 +10,7 @@
 	<script src="static/granim.min.js"></script>
 	<script src="static/script.js"></script>
 </head>
-<body>
+<body onload="changeImage();">
 
     <div class="wrapper-page">
 			<canvas id="canvas-basic"></canvas>
@@ -25,7 +25,7 @@
 					<div class="desc-page">Join Certificado, a blockchain-based protocol for issuing digital certificates.
 						Create unique NFT credentials on Algorand to reward your students or event attendees for free.</div>
 
-					<form action="" method="post" class="mws-form join">
+					<form action="" method="post" class="mws-form join" enctype="multipart/form-data">
 
 						<div class="wrapper-field">
 							<div class="label-field">E-mail</div>
