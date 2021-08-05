@@ -79,8 +79,9 @@ $( document ).ready(function() {
             data: JSON.stringify(data),
             type: 'POST',
             success: function (data) {
+                console.log(data)
                 if (data) {
-                    console.log(data)
+                    if(data != 'Пусто'){
                     document.querySelectorAll('.item').forEach(e => e.remove())
                     data.forEach(el => {
                         template = `          <div class="wrapper-ico-item">
@@ -123,6 +124,15 @@ $( document ).ready(function() {
                         e.preventDefault();
                         close_popup();
                     });
+                    }
+                    else{
+                    document.querySelectorAll('.item').forEach(e => e.remove())
+                    document.querySelectorAll('.item-empty').forEach(e => e.remove())
+                    var newDiv = document.createElement('div')
+                     newDiv.className = 'item-empty'
+                     newDiv.innerHTML = `<div class="content-item"> Nothing found :( Check out the correctness of writing a name. </div>`
+                     document.querySelector('.wrapper-result-items').appendChild(newDiv)
+                    }
                 }
             }
         });

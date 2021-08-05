@@ -5,7 +5,7 @@ import hashlib
 from flask import Flask, render_template ,request, send_file, send_from_directory, jsonify
 from algosdk import kmd, account, mnemonic
 from algosdk.v2client import algod
-from algosdk.future.transaction import AssetConfigTxn, PaymentTxn
+from algosdk.future.transaction import AssetConfigTxn, PaymentTxn, AssetTransferTxn
 import sqlite3
 import csv
 import json
@@ -96,14 +96,14 @@ def api():
         print(send_amount)
         existing_account = account_public_key
         send_to_address = address
-        #tx = transaction.PaymentTxn(existing_account, params, send_to_address, send_amount)
-        #signed_tx = tx.sign(account_private_key)
-        #try:
-        #    tx_confirm = algod_client.send_transaction(signed_tx)
-        #    print('Transaction sent with ID', signed_tx.transaction.get_txid())
-        #    wait_for_confirmation(algod_client, txid=signed_tx.transaction.get_txid())
-        #except Exception as e:
-        #    print(e)
+        tx = PaymentTxn(existing_account, params, send_to_address, send_amount)
+        signed_tx = tx.sign(account_private_key)
+        try:
+            tx_confirm = algod_client.send_transaction(signed_tx)
+            print('Transaction sent with ID', signed_tx.transaction.get_txid())
+            wait_for_confirmation(algod_client, txid=signed_tx.transaction.get_txid())
+        except Exception as e:
+            print(e)
         params = algod_client.suggested_params()
         params.fee = 1000
         params.flat_fee = True
@@ -126,21 +126,20 @@ def api():
             url="https://certificado.one",
             note=description,
             decimals=0)
-        #stnx = txn.sign(mnemonic.to_private_key(user_info['mnemonic']))
-        #txid = algod_client.send_transaction(stnx)
-        #wait_for_confirmation(algod_client, txid)
-        global_asset_id = ''
-        #try:
-        #    ptx = algod_client.pending_transaction_info(txid)
-        #    asset_id = ptx["asset-index"]
-        #    global_asset_id = str(ptx["asset-index"])
-        #    print_created_asset(algod_client, user_info['address'], asset_id)
-        #    print_asset_holding(algod_client, user_info['address'], asset_id)
-        #except Exception as e:
-        #    print(e)
+        stnx = txn.sign(mnemonic.to_private_key(user_info['mnemonic']))
+        txid = algod_client.send_transaction(stnx)
+        wait_for_confirmation(algod_client, txid)
+        try:
+            ptx = algod_client.pending_transaction_info(txid)
+            asset_id = ptx["asset-index"]
+            global_asset_id = str(ptx["asset-index"])
+            print_created_asset(algod_client, user_info['address'], asset_id)
+            print_asset_holding(algod_client, user_info['address'], asset_id)
+        except Exception as e:
+            print(e)
         with open('C:\\Users\\Fiji\\PycharmProjects\\pythonProject\\certificado_algorand\\static\\files\\%s.csv' % (str(now)), 'w', newline='') as csvfile:
             writer = csv.writer(csvfile, delimiter=';')
-            writer.writerow(["Студент", "Код доступа к поиску", "Код доступа к сертификату"])
+            writer.writerow(["Студент", "Код доступа к сертификату"])
             for i in student:
                 cur.execute("select code from student where name=?", [i])
                 code = cur.fetchall()
@@ -153,13 +152,12 @@ def api():
                     cur.execute("insert into student (name, code) values (?, ?)", [i, hash])
                     con.commit()
                 hash_1 = random.randint(1000000, 9999999)
-                asset_id = random.randint(1000000, 9999999)
                 cur.execute("insert into certificates (path, student, school, asset_id, description, date, course_name, template, access_code) values(?, ?, ?, ?, ?, ?, ?, ?, ?)", ['', i, email, str(asset_id), description, time, course, templates, str(hash_1)])
                 con.commit()
                 username_mas = i.split()
                 username = '_'.join(username_mas)
                 pdfkit.from_url("http://127.0.0.1:5000/get_certificate/%s/%s/%s" %(username, hash, str(asset_id)), "certificates/{}.pdf".format(username + "_" + str(asset_id)), configuration=config)
-                writer.writerow([i, str(hash), str(hash_1)])
+                writer.writerow([i, str(hash_1)])
             csvfile.close()
         #return send_file('/home/kiselperdit/PycharmProjects/algorand/files/%s.csv' %(str(now)), as_attachment=False)
         return  jsonify("static/files/" + str(now) + ".csv")
@@ -177,15 +175,14 @@ def api():
         send_amount = 200000 + 10000 * len(student)
         existing_account = account_public_key
         send_to_address = address
-        #tx = transaction.PaymentTxn(existing_account, params, send_to_address, send_amount)
-        #signed_tx = tx.sign(account_private_key)
-
-        #try:
-        #    tx_confirm = algod_client.send_transaction(signed_tx)
-        #    print('Transaction sent with ID', signed_tx.transaction.get_txid())
-        #    wait_for_confirmation(algod_client, txid=signed_tx.transaction.get_txid())
-        #except Exception as e:
-        #    print(e)
+        tx = PaymentTxn(existing_account, params, send_to_address, send_amount)
+        signed_tx = tx.sign(account_private_key)
+        try:
+            tx_confirm = algod_client.send_transaction(signed_tx)
+            print('Transaction sent with ID', signed_tx.transaction.get_txid())
+            wait_for_confirmation(algod_client, txid=signed_tx.transaction.get_txid())
+        except Exception as e:
+            print(e)
         params = algod_client.suggested_params()
         params.fee = 1000
         params.flat_fee = True
@@ -208,21 +205,20 @@ def api():
             url="https://certificado.one",
             note=description,
             decimals=0)
-        #stnx = txn.sign(mnemonic.to_private_key(user_info['mnemonic']))
-        #txid = algod_client.send_transaction(stnx)
-        #wait_for_confirmation(algod_client, txid)
-        global_asset_id = ''
-        #try:
-        #    ptx = algod_client.pending_transaction_info(txid)
-        #    asset_id = ptx["asset-index"]
-        #    global_asset_id = str(ptx["asset-index"])
-        #    print_created_asset(algod_client, user_info['address'], asset_id)
-        #    print_asset_holding(algod_client, user_info['address'], asset_id)
-        #except Exception as e:
-        #    print(e)
+        stnx = txn.sign(mnemonic.to_private_key(user_info['mnemonic']))
+        txid = algod_client.send_transaction(stnx)
+        wait_for_confirmation(algod_client, txid)
+        try:
+            ptx = algod_client.pending_transaction_info(txid)
+            asset_id = ptx["asset-index"]
+            global_asset_id = str(ptx["asset-index"])
+            print_created_asset(algod_client, user_info['address'], asset_id)
+            print_asset_holding(algod_client, user_info['address'], asset_id)
+        except Exception as e:
+            print(e)
         with open('C:\\Users\\Fiji\\PycharmProjects\\pythonProject\\certificado_algorand\\static\\files\\%s.csv' % (str(now)), 'w', newline='') as csvfile:
             writer = csv.writer(csvfile, delimiter=';')
-            writer.writerow(["Студент", "Код доступа к поиску", "Код доступа к сертификату"])
+            writer.writerow(["Студент", "Код доступа к сертификату"])
             for i in student:
                 cur.execute("select code from student where name=?", [i])
                 code = cur.fetchall()
@@ -235,13 +231,12 @@ def api():
                     cur.execute("insert into student (name, code) values (?, ?)", [i, hash])
                     con.commit()
                 hash_1 = random.randint(100000, 999999)
-                asset_id = random.randint(1000000, 9999999)
                 cur.execute("insert into certificates (path, student, school, asset_id, description, date, course_name, template, access_code) values(?, ?, ?, ?, ?, ?, ?, ?, ?)", ['', i, email, str(asset_id), description, time, course, templates, str(hash_1)])
                 con.commit()
                 username_mas = i.split()
                 username = '_'.join(username_mas)
                 pdfkit.from_url("http://127.0.0.1:5000/get_certificate/%s/%s/%s" %(username, hash, str(asset_id)), "certificates/{}.pdf".format(username + "_" + str(asset_id)), configuration=config)
-                writer.writerow([i, str(hash), str(hash_1)])
+                writer.writerow([i, str(hash_1)])
             csvfile.close()
         cur.execute("insert into accounts (email, address, private_key, mnemonic) values (?, ?, ?, ?)", [ email, address, private_key, mnemonic_key])
         con.commit()
@@ -268,11 +263,14 @@ def certificate(name, code, asset):
     print(temp)
     if(req_[0][0] and temp[0][0]):
         if(temp[0][0] != 'on'):
-            return render_template("index.html", name=name, back= "/static/" + temp[0][0] + ".png", link="http://localhost:5000/")
+            if(temp[0][0] == '3'):
+                return render_template("index.html", name=name, back= "/static/" + temp[0][0] + ".png", link="http://95.83.116.146:5000/validate/" + asset, style=' #000000')
+            else:
+                return render_template("index.html", name=name, back= "/static/" + temp[0][0] + ".png", link="http://95.83.116.146:5000/validate/" + asset, style=' #ffffff')
         else:
             filename = temp[0][1]
             filename = ''.join(filename.split('@'))
-            return render_template("index.html", name=name, back="/static/img/" + filename + '_template.png', link="https://google.com")
+            return render_template("index.html", name=name, back="/static/img/" + filename + '_template.png', link="http://95.83.116.146:5000/validate/" + asset, style=' #ffffff')
     else:
         return "Ошибка"
 
@@ -295,10 +293,10 @@ def validator():
     if(data):
         print(data)
         name = data[0]['value']
-        code = data[1]['value']
-        print(name, code)
-        code = ''.join(code.split())
-        cur.execute("select * from student where name=? and code=?", [name, code])
+        #code = data[1]['value']
+       #print(name, code)
+       # code = ''.join(code.split())
+        cur.execute("select * from student where name=?", [name])
         _request = cur.fetchall()
         if(_request):
             print(len(_request))
@@ -306,15 +304,18 @@ def validator():
                 cur.execute("select * from certificates where student=?", [name])
                 certificates = cur.fetchall()
                 print(certificates)
+                print(1)
                 return jsonify(certificates)
             else:
                 cur.execute("select * from certificates where student=?", [name])
                 certificates = cur.fetchall()
                 print(certificates)
-                return str(1234)
+                print(2)
+                return render_template("result-empty.html")
         else:
             print(_request)
-            return str(12)
+            print(3)
+            return jsonify("Пусто")
     else:
         return render_template("result.html")
 
@@ -338,6 +339,7 @@ def transaction():
     mas = []
     asset_id = request.form.get("assetid")
     address = request.form.get("address")
+    print(address)
     name = request.form.get("name")
     print(name, asset_id)
     cur.execute("select school from certificates where asset_id=? and student=?", [asset_id, name])
@@ -345,25 +347,46 @@ def transaction():
     print(email_school[0][0])
     cur.execute("select * from accounts where email=?", [email_school[0][0]])
     req_ = cur.fetchall()
+    cur.execute("select mnemonic, address from accounts where email=?", [email_school[0][0]])
+    querry = cur.fetchall()
+    print(querry, req_)
+    algod_address = "https://mainnet-algorand.api.purestake.io/ps2"
+    algod_token = "ygZS35fp3q95Hgl64Ga4d8ZsINOqYGB15UdsA5Cr"
+    purestake_token = {'X-Api-key': algod_token}
+    algod_client = algod.AlgodClient(algod_token=algod_token, algod_address=algod_address, headers=purestake_token)
+    public_key = mnemonic.to_public_key(querry[0][0])
+    private_key = mnemonic.to_private_key(querry[0][0])
     address_sender = req_[0][1]
+    print(public_key)
     private_key_sender = req_[0][2]
+    params = algod_client.suggested_params()
+    print("success")
+    params.fee = 1000
+    params.flat_fee = True
+    txn = AssetTransferTxn(
+        sender=public_key,
+        sp=params,
+        receiver=address,
+        amt=1,
+        index=asset_id)
+    stxn = txn.sign(private_key_sender)
+    txid = algod_client.send_transaction(stxn)
     return jsonify(req_)
-#    params = algod_client.suggested_params()
-#    params.fee = 1000
-#    params.flat_fee = True
-#    txn = AssetTransferTxn(
-#        sender=accounts[1]['pk'],
-#        sp=params,
-#        receiver=accounts[3]["pk"],
-#        amt=1,
-#        index=asset_id)
-#    stxn = txn.sign(accounts[1]['sk'])
-#    txid = algod_client.send_transaction(stxn)
-#    print(txid)
-#    # Wait for the transaction to be confirmed
-#    wait_for_confirmation(algod_client, txid)
-#    # The balance should now be 10.
-#print_asset_holding(algod_client, accounts[3]['pk'], asset_id)
+
+@app.route("/validate/<asset_id>", methods=["GET"])
+def validate(asset_id):
+    algod_address = "https://mainnet-algorand.api.purestake.io/ps2"
+    algod_token = "ygZS35fp3q95Hgl64Ga4d8ZsINOqYGB15UdsA5Cr"
+    purestake_token = {'X-Api-key': algod_token}
+    algod_client = algod.AlgodClient(algod_token=algod_token, algod_address=algod_address, headers=purestake_token)
+    con = sqlite3.connect("example.db")
+    cur = con.cursor()
+    cur.execute("select school, course_name, student from certificates where asset_id=?", [asset_id])
+    school = cur.fetchall()
+    mn = "bamboo minimum topple olympic isolate moon picture notable execute soap great output path scale security include west present zone bundle crawl squirrel seat about tent"
+    if(school):
+        print_asset_holding(algod_client, mnemonic.to_public_key(mn), asset_id)
+        return render_template("auth.html", desc = school[0][1], name=school[0][2])
 
 @app.route("/access", methods=["POST"])
 def access():
@@ -383,4 +406,4 @@ def access():
         else:
             return "Error"
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run('0.0.0.0', port=5000)

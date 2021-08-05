@@ -61,6 +61,7 @@ header {
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    padding: 0 15px;
 }
 h1 {
     font-family: Clinton;
@@ -424,6 +425,17 @@ span.error {
     padding-bottom: 60px;
     border-bottom: 1px rgba(255, 255, 255, 0.4) solid;
 }
+canvas#canvas-grand {
+      position: fixed;
+      display: block;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: -5;
+}
 .social-block {
     display: flex;
     width: 100%;
@@ -519,9 +531,9 @@ a.btn.btn-links.active {
     font-size: 16px;
 }
 .border-field {
-    background: linear-gradient(90.88deg, rgb(255 255 255) 0%, rgb(255 255 255 / 10%) 100%); 
-    border-radius: 16px; 
-    box-shadow: 20px 30px 100px rgb(0 0 0 / 5%), inset -5px -5px 10px rgb(255 255 255 / 10%), inset 5px 5px 10px rgb(255 255 255 / 10%); 
+    background: linear-gradient(90.88deg, rgb(255 255 255) 0%, rgb(255 255 255 / 10%) 100%);
+    border-radius: 16px;
+    box-shadow: 20px 30px 100px rgb(0 0 0 / 5%), inset -5px -5px 10px rgb(255 255 255 / 10%), inset 5px 5px 10px rgb(255 255 255 / 10%);
 }
 .border-field {
     padding: 1px;
@@ -566,12 +578,9 @@ body.fixed {
 body.fixed * {
     /*filter: blur(3px);*/
 }
-
 body.fixed .popup {
     /*filter: blur(0px);*/
 }
-
-
 .title-popup {
     font-family: 'Clinton';
     font-style: normal;
@@ -580,7 +589,6 @@ body.fixed .popup {
     line-height: 24px;
     margin-bottom: 16px;
 }
-
 .desc-popup {
     font-family: 'Ptrootui';
     font-style: normal;
@@ -590,7 +598,6 @@ body.fixed .popup {
     color: rgba(255, 255, 255, 0.7);
     margin-bottom: 25px;
 }
-
 .close {
     z-index: 9999;
     position: absolute;
@@ -598,7 +605,6 @@ body.fixed .popup {
     top: 32px;
     cursor: pointer;
 }
-
 .wrapper-popup {
     padding: 27px 90px;
     height: 100%;
@@ -796,18 +802,161 @@ button.verify-sertificat.proccessing {
 .wrapper-page, #layout {
     transition: .5s;
 }
-canvas#canvas-grand {
-      position: fixed;
-      display: block;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      z-index: -5;
-    }
+.title-verified {
+    font-style: normal;
+    font-weight: 100;
+    font-size: 36px;
+    line-height: 46px;
+    margin-bottom: 38px;
+}
+.container-verified-page {
+    max-width: 600px;
+}
+.container-verified-page .mws-form.verify {
+    max-width: 590px;
+}
+
+.container-verified-page  .wrapper-field {
+    margin-bottom: 5px;
+}
+.desc-verify-page {
+    color: #ffffffd4;
+    margin-bottom: 60px;
+}
+.desc-verify-page strong {
+    text-decoration: underline;
+}
+.success-verified {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20px;
+    font-family: 'Ptrootui';
+    display: inline-block;
+    padding-left: 16px;
+    color: #3FC9B8;
+}
+.success-verified:after {
+    content: '';
+    display: inline-block;
+    background-image: url(img/done.svg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 16px;
+    height: 14px;
+    margin-left: 7px;
+}
+
+
+button.verified-sertificat.active {
+    background: rgba(255, 255, 255, 0.12);
+    width: 135px;
+}
+
+.verified-sertificat {
+    background: #6100FF;
+    border-radius: 40px;
+    border: 0;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 16px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    padding: 12px 15px 11px 20px;
+    cursor: pointer;
+    margin-left: auto;
+    width: 100px;
+    transition: 0.5s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.txt-verified {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 16px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 112px;
+}
+a.validate.blockchain {/* general/color */
+    background: #6100FF;
+    border-radius: 40px;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 16px;
+    /* identical to box height */
+    color: #FFFFFF;
+    display: block;
+    padding: 16px 20px;
+    max-width: 233px;
+    text-decoration: none;
+    text-align: center;
+    margin-top: 24px;
+}
 @media (max-width: 500px) {
+    a.validate.blockchain {/* general/color */
+        background: #6100FF;
+        border-radius: 40px;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 16px;
+        line-height: 16px;
+        /* identical to box height */
+        color: #FFFFFF;
+        display: block;
+        padding: 16px 20px;
+        max-width: 233px;
+        text-decoration: none;
+        text-align: center;
+        margin-top: 24px;
+    }
+
+    h1.title-verified {
+        font-style: normal;
+        font-weight: 600;
+        font-size: 24px;
+        line-height: 32px;
+        margin-bottom: 24px;
+    }
+
+    .desc-verify-page {
+        font-size: 16px;
+    }
+
+    .wrapper-field.wrapper-field-search .border-field {
+        max-width: 180px;
+    }
+
+    input.form-control {
+        font-size: 14px;
+        line-height: 18px;
+    }
+
+    button.verified-sertificat {
+        font-size: 16px;
+        line-height: 16px;
+    }
+
+    .container-verified-page .wrapper-field {
+        margin-bottom: 18px;
+    }
+
+    .success-verified {
+        font-size: 14px;
+    }
+
+    .txt-verified {
+        font-size: 14px;
+    }
+
+    a.validate.blockchain {
+        font-size: 16px;
+        line-height: 16px;
+    }
     .fixed-btn {
         top: 12px;
         right: 16px;
