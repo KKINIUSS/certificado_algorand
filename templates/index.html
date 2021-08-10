@@ -2,42 +2,44 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src={{url_for('static', filename="qr-gen/qrcode.js")}}></script>
-
-
-
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
     <style>
-        @page {
-            size: 9in 16in;
-            margin: 0mm;
+        @font-face {
+            font-family: 'Ptrootui';
+            src: url(/static/fonts/Ptrootui.ttf);
+        }
+        html{
+            width: 100%;
+            height: 100%;
         }
         body {
-            margin: 0;
+            margin: auto;
+            width: 1500px;
+            height: 995px;
             padding: 0;
-        }
-        * {
-            font-family: "Roboto", sans-serif;
         }
         .image-back{
             width: 100%;
             height: 100%;
-            padding-bottom: 400px;
         }
         .wrapper-cert {
-            width: 1200px;
-            height: 800px;
+            width: 1500px;
+            height: 995px;
             background-repeat: no-repeat;
             background-size: cover;
             position: relative;
+            vertical-align: middle;
         }
         .text-1 {
+            font-family: 'Ptrootui';
+            word-wrap:break-word;
             position: absolute;
             width: 100%;
             text-align: center;
             color: {{style}};
-            top: 46%;
+            top: 47%;
             font-size: 80px;
         }
         .qr {
@@ -47,7 +49,17 @@
             width: 190px;
             height: 275px;
             bottom: 0px;
-            right: 150px;
+            right: 200px;
+        }
+        .text-2{
+            font-family: 'Ptrootui';
+            margin-left: 100px;
+            height: 105px;
+            width: 1300px;
+            color: {{style}};
+            margin-top: -400px;
+            font-size: 35px;
+            word-break:break-all;
         }
     </style>
 </head>
@@ -55,18 +67,20 @@
     <main>
         <div class="wrapper-cert">
             <div class="image-back">
-            <img src={{back}} height="100%" width="100%">
-            <div class="text-1">
-                {{name}}
-            </div>
-            <a href={{link}}>
-                <div id="qr" class="qr"></div>
-                    <script type="text/javascript">
-                        new QRCode(document.getElementById("qr"), '{{link}}');
-                    </script>
+                <img src={{back}} height="100%" width="100%">
+                <div class="text-1">
+                    {{name}}
                 </div>
+                <div class="text-2">
+                    {{description}}
                 </div>
-            </a>
+                <a href={{link}}>
+                    <div id="qr" class="qr"></div>
+                        <script type="text/javascript">
+                            new QRCode(document.getElementById("qr"), '{{link}}');
+                        </script>
+                    </div>
+                </a>
         </div>
     </main>
 </body>

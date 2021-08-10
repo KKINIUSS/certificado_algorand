@@ -220,6 +220,7 @@ textarea {
     font-size: 16px;
     display: flex;
     align-items: center;
+    transition: .5s;
 }
 .fixed-btn {
     cursor: pointer;
@@ -425,17 +426,34 @@ span.error {
     padding-bottom: 60px;
     border-bottom: 1px rgba(255, 255, 255, 0.4) solid;
 }
+
 canvas#canvas-grand {
-      position: fixed;
-      display: block;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      z-index: -5;
+    position: fixed;
+    display: block;
+    width: 600px;
+    height: initial;
+    top: 70px;
+    right: -130px;
+    bottom: 0;
+    left: initial;
+    z-index: -5;
+    transform: rotate(
+            180deg
+    );
 }
+
+.join-sending .ico-mark {
+    background-image: url(/static/img/animation.gif);
+    height: 19px;
+}
+.join-sending i {
+    display: initial;
+}
+.join-sending {
+    transition: .5s;
+}
+
+
 .social-block {
     display: flex;
     width: 100%;
@@ -478,6 +496,14 @@ canvas#canvas-grand {
     display: flex;
     transition: .3s;
 }
+.btn-links_down {
+    background: #6100FF;
+    border-radius: 40px;
+    width: 45px;
+    height: 45px;
+    align-items: center;
+    justify-content: center;
+}
 .btn-links {
     background: #6100FF;
     border-radius: 40px;
@@ -487,6 +513,14 @@ canvas#canvas-grand {
     justify-content: center;
 }
 .btn-links:hover {
+    background: #EA0782;
+    transition: .3s;
+}
+.btn-links_down:hover {
+    background: #EA0782;
+    transition: .3s;
+}
+a.btn.btn-links_down.active {
     background: #EA0782;
     transition: .3s;
 }
@@ -637,6 +671,10 @@ body.fixed .popup {
     align-items: center;
 }
 .btn-download .btn-links {
+    margin-left: 17px;
+    background: #EA0782;
+}
+.btn-download .btn-links_down {
     margin-left: 17px;
     background: #EA0782;
 }
@@ -795,9 +833,17 @@ button.verify-sertificat.proccessing {
     width: 100%;
     text-decoration: none;
 }
+.btn-download-mobile .btn-links_down {
+    width: 100%;
+    text-decoration: none;
+}
 .btn-download-mobile .btn-links .ico {
     position: relative;
     left: 50px;
+}
+.btn-download-mobile .btn-links_down .ico {
+    position: relative;
+    left: 40px;
 }
 .wrapper-page, #layout {
     transition: .5s;
@@ -928,7 +974,7 @@ a.validate.blockchain {/* general/color */
     }
 
     .wrapper-field.wrapper-field-search .border-field {
-        max-width: 180px;
+        /*max-width: 180px;*/
     }
 
     input.form-control {
@@ -1136,6 +1182,17 @@ a.validate.blockchain {/* general/color */
     button.verify-sertificat.active {
         padding: 12px 6px 11px 10px;
         width: 110px;
+    }
+    canvas#canvas-grand {
+        width: 100%;
+        max-width: 100%;
+        left: 0;
+        right: 0;
+        bottom: 400px;
+        top: initial;
+        transform: rotate(
+                0deg
+        );
     }
 }
 

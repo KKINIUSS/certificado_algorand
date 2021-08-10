@@ -9,7 +9,7 @@ $( document ).ready(function() {
     });
 
 
- $('.join-sertificat').on('click', function(e) {
+    $('.join-sertificat').on('click', function(e) {
 
         const isChecked = !!$('[type="radio"]:checked').length;
         $( ".wrapper-field" ).each(function( index ) {
@@ -26,14 +26,14 @@ $( document ).ready(function() {
         });
         e.preventDefault();
         let form = $(this).parents('form'),
-        data = $(form).serializeArray();
+            data = $(form).serializeArray();
         var formData = new FormData();
         formData.append("myFile", document.getElementById("js-file").files[0]);
         formData.append("email", data[0]['value']);
         var xhr = new XMLHttpRequest();
         if(formData){
-        xhr.open("POST", "/upload_template");
-        xhr.send(formData);
+            xhr.open("POST", "/upload_template");
+            xhr.send(formData);
         }
         console.log(data)
         $.ajax({
@@ -42,10 +42,20 @@ $( document ).ready(function() {
             contentType : "application/json",
             data: JSON.stringify(data),
             type: 'POST',
+            beforeSend: function(){
+                if (
+                    ($(this).find('.form-control').val() == '') ||
+                    ( !isChecked )
+                ) { } else {
+                    $('.join-sertificat').addClass('join-sending');
+                }
+
+            },
             success: function (data) {
                 if (data) {
                     console.log(14000)
                     console.log(data)
+                    $('.join-sertificat').removeClass('join-sending');
                     $('.join-sertificat').addClass('join-success');
                     console.log(15000)
                     $('.msg-access').show('100');
@@ -53,6 +63,7 @@ $( document ).ready(function() {
                 }
             }
         });
+
 
     });
 
@@ -71,7 +82,7 @@ $( document ).ready(function() {
         });
         e.preventDefault();
         let form = $(this).parents('form'),
-        data = $(form).serializeArray();
+            data = $(form).serializeArray();
         $.ajax({
             url: "/validator",
             dataType: "json",
@@ -81,10 +92,11 @@ $( document ).ready(function() {
             success: function (data) {
                 console.log(data)
                 if (data) {
-                    if(data != 'Пусто'){
-                    document.querySelectorAll('.item').forEach(e => e.remove())
-                    data.forEach(el => {
-                        template = `          <div class="wrapper-ico-item">
+                    if(data.length != 0){
+                        document.querySelectorAll('.item-empty').forEach(e => e.remove())
+                        document.querySelectorAll('.item').forEach(e => e.remove())
+                        data.forEach(el => {
+                            template = `          <div class="wrapper-ico-item">
                             <i class="ico ico-item" style="background-image: url(static/img/greek.svg);"></i>
                         </div>
                         <div class="content-item">
@@ -98,14 +110,15 @@ $( document ).ready(function() {
                                 <a href="javascript://" data-asset=${el[3]} data-name=${el[1]} onclick="create(this)">Claim NTF</a>
                             </div>
                         </div>`
-                        var newDiv = document.createElement('div')
-                        newDiv.className = 'item'
-                        newDiv.innerHTML = template
-                        document.querySelector('.wrapper-result-items').appendChild(newDiv)
-                    })
-                    $('.close').on('click', function() {
+                            var newDiv = document.createElement('div')
+                            newDiv.className = 'item'
+                            newDiv.innerHTML = template
+                            document.querySelector('.wrapper-result-items').appendChild(newDiv)
+                        })
+                        $('.close').on('click', function() {
                             let div = document.querySelector(".verify-sertificat")
                             div.classList.remove('active')
+                            document.getElementById('codes').value = ''
                             document.getElementById('claim_nft').className = 'lock'
                             document.getElementById('download_pdf').className = 'lock'
                             document.getElementById('download_pdf').href = '#'
@@ -113,25 +126,34 @@ $( document ).ready(function() {
                             document.getElementById('claim_nft').setAttribute('onclick',"return false")
                             $('#claim_nft').attr({'data-asset':'', 'data-address':''})
                             close_popup();
-                    });
-                    $('.btn-links').on('click', function(e) {
-                        e.preventDefault();
-                        console.log($(this).data('asset'))
-                        $('.verify-sertificat').attr('data-asset', $(this).data('asset'))
-                        open_popup('.popup-access');
-                    });
-                    $('body').on('click', '#layout', function(e) {
-                        e.preventDefault();
-                        close_popup();
-                    });
+                        });
+                        $('.btn-links').on('click', function(e) {
+                            e.preventDefault();
+                            console.log($(this).data('asset'))
+                            $('.verify-sertificat').attr('data-asset', $(this).data('asset'))
+                            open_popup('.popup-access');
+                        });
+                        $('body').on('click', '#layout', function() {
+                            let div = document.querySelector(".verify-sertificat")
+                            div.classList.remove('active')
+                            document.getElementById('codes').value = ''
+                            document.getElementById('claim_nft').className = 'lock'
+                            document.getElementById('download_pdf').className = 'lock'
+                            document.getElementById('download_pdf').href = '#'
+                            document.getElementById('download_pdf').setAttribute('onclick',"return false")
+                            document.getElementById('claim_nft').setAttribute('onclick',"return false")
+                            $('#claim_nft').attr({'data-asset':'', 'data-address':''})
+                            close_popup();
+                        });
                     }
                     else{
-                    document.querySelectorAll('.item').forEach(e => e.remove())
-                    document.querySelectorAll('.item-empty').forEach(e => e.remove())
-                    var newDiv = document.createElement('div')
-                     newDiv.className = 'item-empty'
-                     newDiv.innerHTML = `<div class="content-item"> Nothing found :( Check out the correctness of writing a name. </div>`
-                     document.querySelector('.wrapper-result-items').appendChild(newDiv)
+                        console.log("Nothing")
+                        document.querySelectorAll('.item').forEach(e => e.remove())
+                        document.querySelectorAll('.item-empty').forEach(e => e.remove())
+                        var newDiv = document.createElement('div')
+                        newDiv.className = 'item-empty'
+                        newDiv.innerHTML = `<div class="content-item"> Nothing found :( Check out the correctness of writing a name. </div>`
+                        document.querySelector('.wrapper-result-items').appendChild(newDiv)
                     }
                 }
             }
@@ -155,7 +177,7 @@ $( document ).ready(function() {
         });
         e.preventDefault();
         let form = $(this).parents('form'),
-        data = $(form).serializeArray();
+            data = $(form).serializeArray();
         console.log(data)
         data.push({'aseet-id' : $(this).attr('data-asset')});
         console.log(data)
@@ -184,7 +206,6 @@ $( document ).ready(function() {
     });
     $(".download_pdf").on('clock', function(e){
         e.preventDefault();
-
     });
 
     $(".js-musk-number").mask("999 999", {placeholder: " " });
@@ -196,18 +217,18 @@ $( document ).ready(function() {
 
 
 
-/*
-    jQuery(function($){
-        $(document).mouseup(function (e){ // событие клика по веб-документу
-            var div = $(".menu-links"); // тут указываем ID элемента
-            if (!div.is(e.target) // если клик был не по нашему блоку
-                && div.has(e.target).length === 0) { // и не по его дочерним элементам
-                div.hide(); // скрываем его
-                $('.btn-links').removeClass('active');
-            }
+    /*
+        jQuery(function($){
+            $(document).mouseup(function (e){ // событие клика по веб-документу
+                var div = $(".menu-links"); // тут указываем ID элемента
+                if (!div.is(e.target) // если клик был не по нашему блоку
+                    && div.has(e.target).length === 0) { // и не по его дочерним элементам
+                    div.hide(); // скрываем его
+                    $('.btn-links').removeClass('active');
+                }
+            });
         });
-    });
-*/
+    */
 
     var granimInstance = new Granim({
         element: '#canvas-basic',
@@ -232,11 +253,11 @@ $( document ).ready(function() {
         e.preventDefault();
         open_popup('.popup-standarts');
     });
+
     $('.btn-links').on('click', function(e) {
         e.preventDefault();
         open_popup('.popup-access');
     });
-
 
     $('body').on('click', '#layout', function(e) {
         e.preventDefault();
@@ -292,7 +313,6 @@ var loadFile = function(event) {
 
 
 function create(e) {
-   let attr = e.getAttribute('data-asses');
-   console.log(attr);
+    let attr = e.getAttribute('data-asses');
+    console.log(attr);
 }
-
