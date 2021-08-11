@@ -19,12 +19,24 @@ from werkzeug.utils import redirect
 import pdfkit
 from werkzeug.utils import secure_filename
 from platform import python_version
-
+from threading import  Thread
 app = Flask(__name__)
 UPLOAD_FOLDER = 'C:\\Users\\Fiji\\PycharmProjects\\pythonProject\\certificado_algorand\\static\\img'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 from_email = 'certificado.supp@gmail.com'
 password = 'eoomamwfjaurnpyc'
+
+class ThreadWithReturnValue(Thread):
+    def __init__(self, group=None, target=None, name=None, args=(), kwargs={}, Verbose=None):
+        Thread.__init__(self, group, target, name, args, kwargs)
+        self._return = None
+    def run(self):
+        print(type(self._target))
+        if self._target is not None:
+            self._return = self._target(*self._args, **self._kwargs)
+    def join(self, *args):
+        Thread.join(self, *args)
+        return self._return
 
 def wait_for_confirmation(client, txid):
     last_round = client.status().get('last-round')
@@ -59,6 +71,40 @@ def print_asset_holding(algodclient, account, assetid):
             print(json.dumps(scrutinized_asset, indent=4))
             break
 
+def create_asset(algod_client, address, mnemonic_key, description, course):
+    params = algod_client.suggested_params()
+    params.fee = 1000
+    params.flat_fee = True
+    user_info = {'address': address, 'mnemonic': mnemonic_key}
+    txn = AssetConfigTxn(
+        sender=str(user_info['address']),
+        sp=params,
+        total=1,
+        default_frozen=False,
+        unit_name="CFTCD",
+        asset_name=course,
+        manager=str(user_info['address']),
+        reserve=str(user_info['address']),
+        freeze=str(user_info['address']),
+        clawback=str(user_info['address']),
+        url="https://certificado.one",
+        note=description,
+        decimals=0)
+    stnx = txn.sign(mnemonic.to_private_key(user_info['mnemonic']))
+    txid = algod_client.send_transaction(stnx)
+    wait_for_confirmation(algod_client, txid)
+    try:
+        ptx = algod_client.pending_transaction_info(txid)
+        asset_id = ptx["asset-index"]
+        global_asset_id = str(ptx["asset-index"])
+        print_created_asset(algod_client, user_info['address'], asset_id)
+        print_asset_holding(algod_client, user_info['address'], asset_id)
+    except Exception as e:
+        print(e)
+    #asset_id = random.randint(10000000, 99999999)
+    return asset_id
+
+
 @app.route("/", methods=["GET"])
 def index():
     return render_template("join_withoutPopUp.html")
@@ -74,7 +120,6 @@ def api():
     account_public_key = mnemonic.to_public_key(mnemonic_sender)
     con = sqlite3.connect("example.db")
     cur = con.cursor()
-    print(1)
     data = request.get_json()
     print(data)
     email = data[0]['value']
@@ -111,14 +156,12 @@ def api():
         mnemonic_key = query[0][1]
         print(address, mnemonic_key)
         params = algod_client.suggested_params()
-        gh = params.gh
-        first_valid_round = params.first
-        last_valid_round = params.last
-        fee = params.min_fee
         params.flat_fee = True
         params.fee = 1000
         with open('C:\\Users\\Fiji\\PycharmProjects\\pythonProject\\certificado_algorand\\static\\files\\%s.csv' % (str(file_name)), 'w', newline='') as csvfile:
+            time_sec = datetime.datetime.now()
             writer = csv.writer(csvfile, delimiter=';')
+            writer.writerow(["Student", "Access code", "Asset ID"])
             send_amount = 10000 * len(student) + 100000 * len(student)
             existing_account = account_public_key
             send_to_address = address
@@ -130,38 +173,19 @@ def api():
                 wait_for_confirmation(algod_client, txid=signed_tx.transaction.get_txid())
             except Exception as e:
                 print(e)
-            writer.writerow(["Student", "Access code", "Asset ID"])
-            for i in student:
-                asset_id = random.randint(10000000, 99999999)
-                params = algod_client.suggested_params()
-                params.fee = 1000
-                params.flat_fee = True
-                user_info = {'address': address, 'mnemonic': mnemonic_key}
-                txn = AssetConfigTxn(
-                    sender=str(user_info['address']),
-                    sp=params,
-                    total=1,
-                    default_frozen=False,
-                    unit_name="CFTCD",
-                    asset_name=course,
-                    manager=str(user_info['address']),
-                    reserve=str(user_info['address']),
-                    freeze=str(user_info['address']),
-                    clawback=str(user_info['address']),
-                    url="https://certificado.one",
-                    note=description,
-                    decimals=0)
-                stnx = txn.sign(mnemonic.to_private_key(user_info['mnemonic']))
-                txid = algod_client.send_transaction(stnx)
-                wait_for_confirmation(algod_client, txid)
-                try:
-                   ptx = algod_client.pending_transaction_info(txid)
-                   asset_id = ptx["asset-index"]
-                   global_asset_id = str(ptx["asset-index"])
-                   print_created_asset(algod_client, user_info['address'], asset_id)
-                   print_asset_holding(algod_client, user_info['address'], asset_id)
-                except Exception as e:
-                   print(e)
+            threads = []
+            asset_id_mas = []
+            for i in range(len(student)):
+                stringer = str(datetime.datetime.now())
+                hash = hashlib.sha1(stringer.encode('utf-8')).hexdigest()
+                description = description + "\n" + str(hash)
+                t = ThreadWithReturnValue(target=create_asset, args=(algod_client, address, mnemonic_key, description, course))
+                t.start()
+                threads.append(t)
+            for t in threads:
+                asset_id_mas.append(t.join())
+            for i, asset_id in zip(student, asset_id_mas):
+                # asset_id = random.randint(10000000, 99999999)
                 time = datetime.datetime.now()
                 time = time.strftime("%d/%m/%Y")
                 hash = random.randint(100000, 999999)
@@ -172,7 +196,6 @@ def api():
                 pdfkit.from_url("http://127.0.0.1:5000/get_certificate/%s/%s/%s" %(username, hash, str(asset_id)), "certificates/{}.pdf".format(username + "_" + str(asset_id)), configuration=config, options=pdfkit_options)
                 writer.writerow([i, str(hash), str(asset_id)])
             csvfile.close()
-            print("File created")
         server = smtplib.SMTP('smtp.gmail.com: 587')
         server.starttls()
         server.login(from_email, password)
@@ -180,10 +203,8 @@ def api():
         filepath = 'C:\\Users\\Fiji\\PycharmProjects\\pythonProject\\certificado_algorand\\static\\files\\%s.csv' % str(file_name)
         basename = os.path.basename(filepath)
         filesize = os.path.getsize(filepath)
-        print("file success")
         part_file = MIMEBase('application', 'octet-stream; name="{}"'.format(basename))
         part_file.set_payload(open(filepath, "rb").read())
-        print("file success")
         part_file.add_header('Content-Description', basename)
         part_file.add_header('Content-Disposition', 'attachment; filename="{}"; size={}'.format(basename, filesize))
         encoders.encode_base64(part_file)
@@ -266,19 +287,18 @@ def api():
         server.sendmail(from_email, email, msg.as_string())
         server.quit()
         #return send_file('/home/kiselperdit/PycharmProjects/algorand/files/%s.csv' %(str(now)), as_attachment=False)
+        time_sec_end = datetime.datetime.now()
+        print(time_sec_end - time_sec)
         return  jsonify("static/files/" + str(file_name) + ".csv")
     else:
         private_key, address = account.generate_account()
         mnemonic_key = mnemonic.from_private_key(private_key)
         print(private_key, address, mnemonic_key)
         params = algod_client.suggested_params()
-        gh = params.gh
-        first_valid_round = params.first
-        last_valid_round = params.last
-        fee = params.min_fee
         params.flat_fee = True
         params.fee = 1000
         with open('C:\\Users\\Fiji\\PycharmProjects\\pythonProject\\certificado_algorand\\static\\files\\%s.csv' % (str(file_name)), 'w', newline='') as csvfile:
+            time_sec = datetime.datetime.now()
             writer = csv.writer(csvfile, delimiter=';')
             writer.writerow(["Student", "Access code", "Asset ID"])
             send_amount = 200000 + 10000 * len(student) + 100000 * len(student)
@@ -292,37 +312,19 @@ def api():
                 wait_for_confirmation(algod_client, txid=signed_tx.transaction.get_txid())
             except Exception as e:
                 print(e)
-            for i in student:
-                asset_id = random.randint(10000000, 99999999)
-                params = algod_client.suggested_params()
-                params.fee = 1000
-                params.flat_fee = True
-                user_info = {'address': address, 'mnemonic': mnemonic_key}
-                txn = AssetConfigTxn(
-                    sender=str(user_info['address']),
-                    sp=params,
-                    total=1,
-                    default_frozen=False,
-                    unit_name="CFTCD",
-                    asset_name=course,
-                    manager=str(user_info['address']),
-                    reserve=str(user_info['address']),
-                    freeze=str(user_info['address']),
-                    clawback=str(user_info['address']),
-                    url="https://certificado.one",
-                    note=description,
-                    decimals=0)
-                stnx = txn.sign(mnemonic.to_private_key(user_info['mnemonic']))
-                txid = algod_client.send_transaction(stnx)
-                wait_for_confirmation(algod_client, txid)
-                try:
-                   ptx = algod_client.pending_transaction_info(txid)
-                   asset_id = ptx["asset-index"]
-                   global_asset_id = str(ptx["asset-index"])
-                   print_created_asset(algod_client, user_info['address'], asset_id)
-                   print_asset_holding(algod_client, user_info['address'], asset_id)
-                except Exception as e:
-                   print(e)
+            threads = []
+            asset_id_mas = []
+            for i in range(len(student)):
+                stringer = str(datetime.datetime.now())
+                hash = hashlib.sha1(stringer.encode('utf-8')).hexdigest()
+                description = description + "\n" + str(hash)
+                t = ThreadWithReturnValue(target=create_asset, args=(algod_client, address, mnemonic_key, description, course))
+                t.start()
+                threads.append(t)
+            for t in threads:
+                asset_id_mas.append(t.join())
+            for i, asset_id in zip(student, asset_id_mas):
+                #asset_id = random.randint(10000000, 99999999)
                 time = datetime.datetime.now()
                 time = time.strftime("%d/%m/%Y")
                 hash = random.randint(100000, 999999)
@@ -333,7 +335,6 @@ def api():
                 pdfkit.from_url("http://127.0.0.1:5000/get_certificate/%s/%s/%s" %(username, hash, str(asset_id)), "certificates/{}.pdf".format(username + "_" + str(asset_id)), configuration=config, options=pdfkit_options)
                 writer.writerow([i, str(hash), str(asset_id)])
             csvfile.close()
-            print("File created")
         cur.execute("insert into accounts (email, address, private_key, mnemonic) values (?, ?, ?, ?)", [ email, address, private_key, mnemonic_key])
         con.commit()
         server = smtplib.SMTP('smtp.gmail.com: 587')
@@ -343,10 +344,8 @@ def api():
         filepath = 'C:\\Users\\Fiji\\PycharmProjects\\pythonProject\\certificado_algorand\\static\\files\\%s.csv' % str(file_name)
         basename = os.path.basename(filepath)
         filesize = os.path.getsize(filepath)
-        print("file success")
         part_file = MIMEBase('application', 'octet-stream; name="{}"'.format(basename))
         part_file.set_payload(open(filepath, "rb").read())
-        print("file success")
         part_file.add_header('Content-Description', basename)
         part_file.add_header('Content-Disposition', 'attachment; filename="{}"; size={}'.format(basename, filesize))
         encoders.encode_base64(part_file)
@@ -428,12 +427,10 @@ def api():
         msg.attach(part_file)
         server.sendmail(from_email, email, msg.as_string())
         server.quit()
+        time_sec_end = datetime.datetime.now()
+        print(time_sec_end - time_sec)
         return  jsonify("static/files/" + str(file_name) + ".csv")
 
-#def send_files(filename):
-#    print(filename)
-#    return redirect(url_for('static',filename='join.html'))
-#    return send_from_directory('/home/kiselperdit/PycharmProjects/algorand/static/files', filename + ".csv", as_attachment=False)
 @app.route("/certificates/example_template.jpg", methods=["GET", "POST"])
 def download_example():
     return send_from_directory('C:\\Users\\Fiji\\PycharmProjects\\pythonProject\\certificado_algorand\\certificates', 'example_template.jpg', as_attachment=False)

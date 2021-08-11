@@ -17,7 +17,6 @@ $( document ).ready(function() {
                 ($(this).find('.form-control').val() == '') ||
                 ( !isChecked )
             ) {
-                console.log(12000)
                 $(this).append('<span class="error">Required field</span>');
                 $(this).find('.form-control').css('border', '1px solid red');
                 setTimeout( function() { $('.error').remove()}, 1000);
@@ -35,7 +34,6 @@ $( document ).ready(function() {
             xhr.open("POST", "/upload_template");
             xhr.send(formData);
         }
-        console.log(data)
         $.ajax({
             url: "/join",
             dataType: "json",
@@ -53,11 +51,8 @@ $( document ).ready(function() {
             },
             success: function (data) {
                 if (data) {
-                    console.log(14000)
-                    console.log(data)
                     $('.join-sertificat').removeClass('join-sending');
                     $('.join-sertificat').addClass('join-success');
-                    console.log(15000)
                     $('.msg-access').show('100');
                     $('.msg-access .content-msg a').attr('href', data);
                 }
@@ -90,7 +85,6 @@ $( document ).ready(function() {
             data: JSON.stringify(data),
             type: 'POST',
             success: function (data) {
-                console.log(data)
                 if (data) {
                     if(data.length != 0){
                         document.querySelectorAll('.item-empty').forEach(e => e.remove())
@@ -129,7 +123,6 @@ $( document ).ready(function() {
                         });
                         $('.btn-links').on('click', function(e) {
                             e.preventDefault();
-                            console.log($(this).data('asset'))
                             $('.verify-sertificat').attr('data-asset', $(this).data('asset'))
                             open_popup('.popup-access');
                         });
@@ -147,7 +140,6 @@ $( document ).ready(function() {
                         });
                     }
                     else{
-                        console.log("Nothing")
                         document.querySelectorAll('.item').forEach(e => e.remove())
                         document.querySelectorAll('.item-empty').forEach(e => e.remove())
                         var newDiv = document.createElement('div')
@@ -178,9 +170,7 @@ $( document ).ready(function() {
         e.preventDefault();
         let form = $(this).parents('form'),
             data = $(form).serializeArray();
-        console.log(data)
         data.push({'aseet-id' : $(this).attr('data-asset')});
-        console.log(data)
         $.ajax({
             url: "/access",
             dataType: "json",
@@ -189,7 +179,6 @@ $( document ).ready(function() {
             type: 'POST',
             success: function (data) {
                 if (data) {
-                    console.log("success")
                     let div = document.querySelector(".verify-sertificat")
                     div.classList.add('active')
                     document.getElementById('claim_nft').className = 'unlock'
