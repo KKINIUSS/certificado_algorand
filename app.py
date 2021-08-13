@@ -3,6 +3,7 @@ import os.path
 import random
 import hashlib
 import smtplib
+from transliterate import translit
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
@@ -15,13 +16,13 @@ import sqlite3
 import csv
 import json
 from flask.helpers import url_for
-from werkzeug.utils import redirect
+import re
 import pdfkit
 from werkzeug.utils import secure_filename
 from platform import python_version
 from threading import  Thread
 app = Flask(__name__)
-UPLOAD_FOLDER = 'C:\\Users\\Fiji\\PycharmProjects\\pythonProject\\certificado_algorand\\static\\img'
+UPLOAD_FOLDER = 'C:\\Users\\Fiji\\PycharmProjects\\pythonProject\\certificado_algorand\\static\\temp'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 from_email = 'certificado.supp@gmail.com'
 password = 'eoomamwfjaurnpyc'
@@ -82,13 +83,13 @@ def create_asset(algod_client, address, mnemonic_key, description, course):
         total=1,
         default_frozen=False,
         unit_name="CFTCD",
-        asset_name=course,
+        asset_name='Certificate',
         manager=str(user_info['address']),
         reserve=str(user_info['address']),
         freeze=str(user_info['address']),
         clawback=str(user_info['address']),
         url="https://certificado.one",
-        note=description,
+        note= str(course + " " + description),
         decimals=0)
     stnx = txn.sign(mnemonic.to_private_key(user_info['mnemonic']))
     txid = algod_client.send_transaction(stnx)
@@ -121,14 +122,23 @@ def api():
     con = sqlite3.connect("example.db")
     cur = con.cursor()
     data = request.get_json()
-    print(data)
+    #print(data)
     email = data[0]['value']
+    email = str(email).lower()
+    email = ''.join(str(email).split())
     course = data[1]['value']
+    course = ' '.join(str(course).split())
     templates = data[2]['value']
     description = data[3]['value']
-    print(email, course, templates, description)
-    student = (data[4]['value']).split('\r\n')
-    print(email, course, templates, description, student)
+    description = ' '.join(str(description).split())
+    #print(email, course, templates, description)
+    students = (data[4]['value']).split('\r\n')
+    print(students)
+    students = list(filter(str.strip, students))
+    student = []
+    for i in students:
+        student.append(' '.join(i.split()))
+    print(student)
     cur.execute("create table if not exists accounts (email text, address text,private_key text, mnemonic text)")
     cur.execute("create table if not exists student (name text, code text)")
     cur.execute("create table if not exists certificates (path text, student text, school text, asset_id text, description text, date, course_name text, template text, access_code)")
@@ -176,10 +186,10 @@ def api():
             threads = []
             asset_id_mas = []
             for i in range(len(student)):
-                stringer = str(datetime.datetime.now())
+                stringer = str(i) + str(datetime.datetime.now())
                 hash = hashlib.sha1(stringer.encode('utf-8')).hexdigest()
-                description = description + "\n" + str(hash)
-                t = ThreadWithReturnValue(target=create_asset, args=(algod_client, address, mnemonic_key, description, course))
+                desc = description + "\n" + str(hash)
+                t = ThreadWithReturnValue(target=create_asset, args=(algod_client, address, mnemonic_key, desc, course))
                 t.start()
                 threads.append(t)
             for t in threads:
@@ -193,7 +203,7 @@ def api():
                 con.commit()
                 username_mas = i.split()
                 username = '_'.join(username_mas)
-                pdfkit.from_url("http://127.0.0.1:5000/get_certificate/%s/%s/%s" %(username, hash, str(asset_id)), "certificates/{}.pdf".format(username + "_" + str(asset_id)), configuration=config, options=pdfkit_options)
+                pdfkit.from_url("http://localhost:5000/get_certificate/%s/%s/%s" %(username, hash, str(asset_id)), "certificates/{}.pdf".format(username + "_" + str(asset_id)), configuration=config, options=pdfkit_options)
                 writer.writerow([i, str(hash), str(asset_id)])
             csvfile.close()
         server = smtplib.SMTP('smtp.gmail.com: 587')
@@ -315,10 +325,10 @@ def api():
             threads = []
             asset_id_mas = []
             for i in range(len(student)):
-                stringer = str(datetime.datetime.now())
+                stringer = str(i) + str(datetime.datetime.now())
                 hash = hashlib.sha1(stringer.encode('utf-8')).hexdigest()
-                description = description + "\n" + str(hash)
-                t = ThreadWithReturnValue(target=create_asset, args=(algod_client, address, mnemonic_key, description, course))
+                desc = description + "\n" + str(hash)
+                t = ThreadWithReturnValue(target=create_asset, args=(algod_client, address, mnemonic_key, desc, course))
                 t.start()
                 threads.append(t)
             for t in threads:
@@ -332,7 +342,7 @@ def api():
                 con.commit()
                 username_mas = i.split()
                 username = '_'.join(username_mas)
-                pdfkit.from_url("http://127.0.0.1:5000/get_certificate/%s/%s/%s" %(username, hash, str(asset_id)), "certificates/{}.pdf".format(username + "_" + str(asset_id)), configuration=config, options=pdfkit_options)
+                pdfkit.from_url("http://localhost:5000/get_certificate/%s/%s/%s" %(username, hash, str(asset_id)), "certificates/{}.pdf".format(username + "_" + str(asset_id)), configuration=config, options=pdfkit_options)
                 writer.writerow([i, str(hash), str(asset_id)])
             csvfile.close()
         cur.execute("insert into accounts (email, address, private_key, mnemonic) values (?, ?, ?, ?)", [ email, address, private_key, mnemonic_key])
@@ -442,7 +452,7 @@ def certificate(name, code, asset):
     name = ' '.join(name.split("_"))
     con = sqlite3.connect("example.db")
     cur = con.cursor()
-    cur.execute("select template, school, description from certificates where asset_id=? and student=? and access_code=?", [asset, name, code])
+    cur.execute("select template, school, description, course_name from certificates where asset_id=? and student=? and access_code=?", [asset, name, code])
     temp = cur.fetchall()
     print(temp)
     if(temp[0][0]):
@@ -452,9 +462,19 @@ def certificate(name, code, asset):
             else:
                 return render_template("index.html", name=name, back= "/static/" + temp[0][0] + ".png", link="http://95.83.116.146:5000/validate/" + asset, style=' #ffffff', description= temp[0][2])
         else:
-            filename = temp[0][1]
-            filename = ''.join(filename.split('@'))
-            return render_template("index.html", name=name, back="/static/img/" + filename + '_template.png', link="http://95.83.116.146:5000/validate/" + asset, style=' #ffffff', description= temp[0][2])
+            file_name = str(temp[0][1])
+            courseName = str(temp[0][3])
+            if (re.search('[а-яА-Я]', courseName)):
+                courseName = translit(courseName, language_code='ru', reversed=True)
+            file_name = file_name.lower()
+            file_name = ' '.join(file_name.split())
+            file_name = '_'.join(file_name.split('.'))
+            courseName = '_'.join(courseName.split('.'))
+            courseName = ' '.join(courseName.split())
+            file_name = '_'.join(file_name.split('@')) + '_' + str('_'.join(courseName.split()))
+            file_name = secure_filename(file_name + '_template.png')
+            print("Get cert:", file_name, courseName)
+            return render_template("index.html", name=name, back=url_for('static' , filename='temp/' + file_name), link="http://95.83.116.146:5000/validate/" + asset, style=' #ffffff', description= temp[0][2])
     else:
         return "Ошибка"
 
@@ -462,10 +482,19 @@ def certificate(name, code, asset):
 def upload():
     file = request.files['myFile']
     file_name = request.form.get('email')
-    file_name = ''.join(file_name.split('@'))
-    print(file_name)
+    file_name = file_name.lower()
+    file_name = ' '.join(file_name.split())
+    file_name = '_'.join(file_name.split('.'))
+    courseName = request.form.get('name')
+    if (re.search('[а-яА-Я]', courseName)):
+        courseName = translit(courseName, language_code='ru', reversed=True)
+    courseName = '_'.join(courseName.split('.'))
+    courseName = ' '.join(courseName.split())
+    print("Upload:", file_name, courseName)
+    file_name = '_'.join(file_name.split('@')) + '_' + str('_'.join(courseName.split()))
+    print("Upload:", file_name)
     filename = secure_filename(file_name + '_template.png')
-    print(filename)
+    print("Upload:", filename)
     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
     print(1)
     return "1"
@@ -499,14 +528,14 @@ def download(filename):
 
 @app.route("/claim_nft", methods=["POST"])
 def transaction():
-    print(1)
+    data = request.get_json()
+    print(data)
     con = sqlite3.connect("example.db")
     cur = con.cursor()
     mas = []
-    asset_id = request.form.get("assetid")
-    address = request.form.get("address")
-    print(address)
-    name = request.form.get("name")
+    asset_id = data[1]['asset_id']
+    address = data[0]['address']
+    name = data[2]['name']
     print(name, asset_id)
     cur.execute("select school from certificates where asset_id=? and student=?", [asset_id, name])
     email_school = cur.fetchall()
@@ -537,7 +566,7 @@ def transaction():
         index=asset_id)
     stxn = txn.sign(private_key_sender)
     txid = algod_client.send_transaction(stxn)
-    return jsonify(req_)
+    return jsonify('Success')
 
 @app.route("/validate/<asset_id>", methods=["GET"])
 def validate(asset_id):
@@ -553,7 +582,8 @@ def validate(asset_id):
     if(school):
         print_asset_holding(algod_client, mnemonic.to_public_key(mn), asset_id)
         return render_template("auth.html", desc = school[0][1], name=school[0][2], link="https://algoexplorer.io/asset/" + asset_id)
-
+    else:
+        return render_template("no_auth.html")
 @app.route("/access", methods=["POST"])
 def access():
     con = sqlite3.connect("example.db")
@@ -571,6 +601,6 @@ def access():
             print(q[0][0])
             return jsonify('/download_certificate/' + str(data[1]['aseet-id'] + '/' + q[0][0]), q[0][0])
         else:
-            return "Error"
+            return jsonify("Error")
 if __name__ == "__main__":
     app.run('0.0.0.0', port=5000)
